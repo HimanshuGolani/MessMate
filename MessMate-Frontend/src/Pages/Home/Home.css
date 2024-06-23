@@ -1,0 +1,36 @@
+.home-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.home-container::-webkit-scrollbar {
+  display: none;
+}
+
+section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: start;
+  transition: all 0.8s ease-in-out;
+}
+
+.one {
+  background-color: rgb(36, 164, 138);
+}
+
+.two {
+  background-color: rgb(211, 79, 79);
+}
+
+.three {
+  background-color: rgb(67, 91, 175);
+}
+
+.four {
+  background-color: rgb(191, 64, 191);
+}
