@@ -5,16 +5,16 @@ const Home = () => {
     <>
       <div className="home-container">
         <section className="one">
-          <h1>Levels 1234</h1>
+          <div className="block">Section 1</div>
         </section>
         <section className="two">
-          <h1>Levels 1234</h1>
+          <div className="block">Section 2</div>
         </section>
         <section className="three">
-          <h1>Levels 1234</h1>
+          <div className="block">Section 3</div>
         </section>
         <section className="four">
-          <h1>Levels 1234</h1>
+          <div className="block">Section 4</div>
         </section>
       </div>
     </>
