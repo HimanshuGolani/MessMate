@@ -26,7 +26,7 @@
   height: 100vh;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  animation: appear 5s linear;
+  animation: appear linear;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
 }
