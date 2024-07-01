@@ -18,18 +18,18 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
   },
   address: {
-    type: String,
-    required: true,
+    city: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
   },
   phone_no: {
     type: Number,
     required: true,
-    // validate: {
-    //   validator: function (v) {
-    //     return /^\d{10}$/.test(v);
-    //   },
-    //   message: (props) => `${props.value} is not a valid phone number!`,
-    // },
   },
   Current_Plan: {
     startingDate: {
