@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  Name: {
+  name: {
     type: String,
     required: true,
     trim: true,
@@ -32,18 +32,19 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   Current_Plan: {
+    plan: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Plan",
+    },
     startingDate: {
       type: Date,
-      required: true,
     },
     validTill: {
       type: Date,
-      required: true,
     },
     venderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "vendor",
-      required: true,
     },
   },
   PreviousPlans: [
