@@ -1,7 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import connectionWithDb from "./Database_Connect/connectionWithDb.js";
-import userRouter from "./router/user-router.js";
+import CustomerRouter from "./router/Customer-router.js";
 
 // initializing APP
 const app = express();
@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5001;
 app.use(express.json());
 
 // setting up routes
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/user", CustomerRouter);
 
 // connecting to mongoDb
 connectionWithDb();
