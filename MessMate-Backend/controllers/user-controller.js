@@ -1,11 +1,11 @@
 import UserModel from "../models/User-model.js";
 import bcrypt from "bcryptjs";
+
+// login
 export const userLogin = async (req, res) => {
   try {
-    // Extracting the data from the request body.
     const { email, password } = req.body;
 
-    // Checking that the email and password fields are non-empty.
     if (!email || !password) {
       return res.status(400).send({
         message: "The credentials are incomplete.",
@@ -13,7 +13,6 @@ export const userLogin = async (req, res) => {
       });
     }
 
-    // Checking if the user exists in the DB.
     const existingUser = await UserModel.findOne({ email });
 
     if (!existingUser) {
@@ -23,7 +22,6 @@ export const userLogin = async (req, res) => {
       });
     }
 
-    // Checking if the password matches.
     const isPasswordValid = await bcrypt.compare(
       password,
       existingUser.password
@@ -35,7 +33,6 @@ export const userLogin = async (req, res) => {
       });
     }
 
-    // If the email and password are correct, log the user in.
     return res.status(200).send({
       message: "Login successful.",
       success: true,
@@ -50,22 +47,18 @@ export const userLogin = async (req, res) => {
   }
 };
 
+// User Registration
 export const userRegister = async (req, res) => {
   try {
-    // Extracting the data from the req.body
-    const { name, email, password, address, phone_no } = req.body;
+    const { name, email, password, address, phone_no, role } = req.body;
 
-    // Checking if the inputs are non-empty
-    if (!name || !email || !password || !address || !phone_no) {
+    if (!name || !email || !password || !address || !phone_no || !role) {
       return res.status(400).send({
         message: "The credentials are incomplete.",
         success: false,
       });
     }
 
-    console.log(name, email, password, address, phone_no);
-
-    // Checking if the user already exists
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(409).send({
@@ -74,22 +67,19 @@ export const userRegister = async (req, res) => {
       });
     }
 
-    // Hashing the password before saving it to the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Creating the new user
     const newUser = new UserModel({
       name,
       email,
       password: hashedPassword,
       address,
       phone_no,
+      role,
     });
 
-    // Saving the new user in the DB
     await newUser.save();
 
-    // Responding with a success message
     return res.status(201).send({
       message: "User registered successfully.",
       success: true,

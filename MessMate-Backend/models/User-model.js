@@ -31,31 +31,11 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  Current_Plan: {
-    plan: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Plan",
-    },
-    startingDate: {
-      type: Date,
-    },
-    validTill: {
-      type: Date,
-    },
-    venderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "vendor",
-    },
+  role: {
+    type: String,
+    enum: ["Customer", "Vendor"],
+    required: true,
   },
-  PreviousPlans: [
-    {
-      startingDate: Date,
-      venderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "vendor",
-      },
-    },
-  ],
 });
 
 export default mongoose.model("User", userSchema);

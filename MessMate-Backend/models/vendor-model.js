@@ -1,23 +1,9 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  Name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [/.+\@.+\..+/, "Please enter a valid email address"],
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-  },
-  address: {
+const vendorSchema = new mongoose.Schema({
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  businessName: { type: String, required: true },
+  businessAddress: {
     city: {
       type: String,
       required: true,
@@ -27,10 +13,7 @@ const userSchema = new mongoose.Schema({
       required: true,
     },
   },
-  phone_no: {
-    type: Number,
-    required: true,
-  },
+  businessPhone: { type: String, required: true },
   ListOfPlansOffered: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,4 +26,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("Vendor", vendorSchema);
