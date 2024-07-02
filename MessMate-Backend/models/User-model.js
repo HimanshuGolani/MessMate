@@ -49,7 +49,6 @@ const userSchema = new mongoose.Schema({
   PreviousPlans: [
     {
       startingDate: Date,
-      validTill: Date,
       venderId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "vendor",
