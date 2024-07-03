@@ -2,7 +2,7 @@ import express from "express";
 import {
   vendorLogin,
   vendorRegister,
-} from "../controllers/Vendor-controller.js";
+} from "../controllers/Vender-controller.js";
 
 const vendorRouter = express.Router();
 
