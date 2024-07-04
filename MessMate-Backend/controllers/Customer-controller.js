@@ -1,9 +1,10 @@
 import UserModel from "../models/User-model.js";
 import CustomerModel from "../models/Customer-model.js";
 import plansModel from "../models/plans-model.js";
-import VendorModel from "../models/vendor-model.js";
 import bcrypt from "bcryptjs";
 import vendorModel from "../models/vendor-model.js";
+import jwt from 'jsonwebtoken';
+
 
 // to display hapy custoemrs name and their count...
 export const displayCustomersCount = async (req, res) => {
@@ -23,6 +24,12 @@ export const displayCustomersCount = async (req, res) => {
     });
   }
 };
+
+//Load environment variable from .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
+const SECRET_KEY=process.env.SECRET_KEY;
 
 // login
 export const userLogin = async (req, res) => {
@@ -56,6 +63,9 @@ export const userLogin = async (req, res) => {
       });
     }
 
+    //Generate JWT token
+    const token=jwt.sign({id:existingUser,role:existingUser.role},SECRET_KEY,{expiresIn:"1h"});
+    
     return res.status(200).send({
       message: "Login successful.",
       success: true,
@@ -102,6 +112,9 @@ export const userRegister = async (req, res) => {
     });
 
     await newUser.save();
+
+    // Generate JWT token
+    const token = jwt.sign({ id: newUser._id, role: newUser.role }, SECRET_KEY, { expiresIn: "1h" });
 
     return res.status(201).send({
       message: "User registered successfully.",
