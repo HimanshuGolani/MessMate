@@ -47,6 +47,9 @@ export const vendorLogin = async (req, res) => {
 export const vendorRegister = async (req, res) => {
   const { name, email, password, address, phone_no, businessName, Gst_No } =
     req.body;
+  console.log("====================================");
+  console.log(name, email, password, address, phone_no, businessName, Gst_No);
+  console.log("====================================");
   if (
     !name ||
     !email ||
@@ -92,7 +95,7 @@ export const vendorRegister = async (req, res) => {
       .status(201)
       .json({ message: "Vendor registered successfully", newVendor });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

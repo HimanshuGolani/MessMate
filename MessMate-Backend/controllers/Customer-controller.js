@@ -9,9 +9,11 @@ import vendorModel from "../models/vendor-model.js";
 export const displayCustomersCount = async (req, res) => {
   try {
     const numberOfUsers = await UserModel.countDocuments();
+    const user = await UserModel.find();
 
     return res.status(200).send({
       noOfUsers: numberOfUsers,
+      user,
     });
   } catch (error) {
     console.log(error);
@@ -126,8 +128,12 @@ export const purchasePlan = async (req, res) => {
       });
     }
 
-    const user = await CustomerModel.findById(customerId);
+    const user = await UserModel.findById(customerId);
     const chosenPlan = await plansModel.findById(planId);
+
+    console.log("====================================");
+    console.log(user, chosenPlan);
+    console.log("====================================");
 
     if (!user || !chosenPlan) {
       return res.status(404).send({
@@ -172,6 +178,7 @@ export const purchasePlan = async (req, res) => {
 };
 
 // Getting the current plan details customer has
+// error exists in this fix it.
 export const getCurrentPlan = async (req, res) => {
   try {
     const { userId } = req.params;
