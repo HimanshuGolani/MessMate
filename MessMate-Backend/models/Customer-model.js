@@ -36,6 +36,12 @@ const customerSchema = new mongoose.Schema({
       },
     },
   ],
+  mealTrackers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "MealTracker",
+    },
+  ],
 });
 
 export default mongoose.model("Customer", customerSchema);
