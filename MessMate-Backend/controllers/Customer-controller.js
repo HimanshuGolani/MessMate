@@ -8,9 +8,10 @@ import vendorModel from "../models/vendor-model.js";
 // to display hapy custoemrs name and their count...
 export const displayCustomersCount = async (req, res) => {
   try {
-    const numberodUsers = await CustomerModel.count();
-    return res.status().send({
-      noOfUsers: numberodUsers,
+    const numberOfUsers = await UserModel.countDocuments();
+
+    return res.status(200).send({
+      noOfUsers: numberOfUsers,
     });
   } catch (error) {
     console.log(error);
@@ -113,54 +114,56 @@ export const userRegister = async (req, res) => {
     });
   }
 };
-
-// funciton where the customer can buy the plans
-export const prchasePlan = async (req, res) => {
+// Function where the customer can buy the plans
+export const purchasePlan = async (req, res) => {
   try {
     const { planId, customerId } = req.body;
-    // checking the inputs are non-empty
-    if (!planId || !customerId) {
-      return res.status().send();
-    }
 
-    // if the fields exists then exists then find the plan and custome
+    if (!planId || !customerId) {
+      return res.status(400).send({
+        message: "Plan ID or Customer ID is missing.",
+        success: false,
+      });
+    }
 
     const user = await CustomerModel.findById(customerId);
-    const choosenPlan = await plansModel.findById(planId);
+    const chosenPlan = await plansModel.findById(planId);
 
-    // if any one of the user or the plan is not found
-    if (!user || !choosenPlan) {
-      return res.status().send();
+    if (!user || !chosenPlan) {
+      return res.status(404).send({
+        message: "User or Plan not found.",
+        success: false,
+      });
     }
 
-    // if the user and plan is available then
-
-    // check if the user have any current plan on going ?
     if (user.Current_Plan) {
-      return res.status().send({
-        message: "You have a plan on going, you cannot buy another.",
-      });
-    } else {
-      // add the plan id to the userId
-      user.Current_Plan = planId;
-      // add the user to the vendor
-      const { offeredBy } = choosenPlan;
-      const vendor = await vendorModel.findById(offeredBy);
-      // if the vendor is not found
-      if (!vendor) {
-        return res.status().send({
-          message: "Vendor not found",
-        });
-      }
-      // add the customer ot the venodr
-      vendor.ListOfCustomers.push(customerId);
-
-      return res.status().send({
-        message: "The plan is added succesfully",
+      return res.status(400).send({
+        message: "You already have an ongoing plan.",
+        success: false,
       });
     }
+
+    user.Current_Plan = planId;
+    const { offeredBy } = chosenPlan;
+    const vendor = await VendorModel.findById(offeredBy);
+
+    if (!vendor) {
+      return res.status(404).send({
+        message: "Vendor not found.",
+        success: false,
+      });
+    }
+
+    vendor.ListOfCustomers.push(customerId);
+    await user.save();
+    await vendor.save();
+
+    return res.status(200).send({
+      message: "The plan is added successfully.",
+      success: true,
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).send({
       message: "Internal server error.",
       success: false,
@@ -168,30 +171,35 @@ export const prchasePlan = async (req, res) => {
   }
 };
 
-// getting the current plan details customer has
+// Getting the current plan details customer has
 export const getCurrentPlan = async (req, res) => {
   try {
-    // getting the id form the params
     const { userId } = req.params;
-    // checking the id
+
     if (!userId) {
-      return res.status().send({
-        message: "Id not recieved",
+      return res.status(400).send({
+        message: "ID not received.",
+        success: false,
       });
     }
-    // if the id is non-empty
-    // fetch the user from the db
-    const currentUser = CustomerModel.findById(userId);
-    // checking if the user exists or not
+
+    const currentUser = await CustomerModel.findById(userId)
+      .populate("Current_Plan.plan")
+      .populate("Current_Plan.vendorId");
+
     if (!currentUser) {
-      return res.status().send({
-        message: "User not found",
+      return res.status(404).send({
+        message: "User not found.",
+        success: false,
       });
     }
-    // currentUser.Current_Plan;
-    return res.status().send();
+
+    return res.status(200).send({
+      success: true,
+      currentPlan: currentUser.Current_Plan,
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).send({
       message: "Internal server error.",
       success: false,
@@ -199,31 +207,35 @@ export const getCurrentPlan = async (req, res) => {
   }
 };
 
-// previous palns list
+// Previous plans list
 export const getPreviousPlans = async (req, res) => {
   try {
-    // getting the id form the params
     const { userId } = req.params;
-    // checking the id
+
     if (!userId) {
-      return res.status().send({
-        message: "Id not recieved",
+      return res.status(400).send({
+        message: "ID not received.",
+        success: false,
       });
     }
-    // if the id is non-empty
-    // fetch the user from the db
-    const currentUser = CustomerModel.findById(userId);
-    // checking if the user exists or not
+
+    const currentUser = await CustomerModel.findById(userId)
+      .populate("PreviousPlans.plan")
+      .populate("PreviousPlans.vendorId");
+
     if (!currentUser) {
-      return res.status().send({
-        message: "User not found",
+      return res.status(404).send({
+        message: "User not found.",
+        success: false,
       });
     }
-    // return the properties res need
-    // currentUser.;
-    return res.status().send();
+
+    return res.status(200).send({
+      success: true,
+      previousPlans: currentUser.PreviousPlans,
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).send({
       message: "Internal server error.",
       success: false,
