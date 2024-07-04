@@ -24,6 +24,12 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  ListOfCustomers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+    },
+  ],
 });
 
 export default mongoose.model("Vendor", vendorSchema);

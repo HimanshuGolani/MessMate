@@ -5,7 +5,15 @@ const planSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: String,
+  description: {
+    type: String,
+    require: true,
+  },
+  planType: {
+    type: String,
+    enum: ["Lunch", "Dinner", "Both"],
+    require: true,
+  },
   price: {
     type: Number,
     required: true,

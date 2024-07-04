@@ -10,7 +10,7 @@ const vendorRouter = express.Router();
 
 vendorRouter.post("/loginVendor", vendorLogin);
 vendorRouter.post("/createVendor", vendorRegister);
-vendorRouter.post("/addPlan/:vendorId",createPlan);
-vendorRouter.get("/all",getAllVendors);
+vendorRouter.post("/addPlan/:vendorId", createPlan);
+vendorRouter.get("/getAllVendorDetails", getAllVendors);
 
 export default vendorRouter;
