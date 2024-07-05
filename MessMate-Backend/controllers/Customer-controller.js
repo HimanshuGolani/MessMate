@@ -1,10 +1,12 @@
 import UserModel from "../models/User-model.js";
 import CustomerModel from "../models/Customer-model.js";
 import plansModel from "../models/plans-model.js";
+import VendorModel from "../models/vendor-model.js";
 import bcrypt from "bcryptjs";
-import vendorModel from "../models/vendor-model.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 
+const SECRET_KEY = process.env.SECRET_KEY;
 
 // to display hapy custoemrs name and their count...
 export const displayCustomersCount = async (req, res) => {
@@ -24,12 +26,6 @@ export const displayCustomersCount = async (req, res) => {
     });
   }
 };
-
-//Load environment variable from .env file
-import dotenv from 'dotenv';
-dotenv.config();
-
-const SECRET_KEY=process.env.SECRET_KEY;
 
 // login
 export const userLogin = async (req, res) => {
@@ -64,8 +60,12 @@ export const userLogin = async (req, res) => {
     }
 
     //Generate JWT token
-    const token=jwt.sign({id:existingUser,role:existingUser.role},SECRET_KEY,{expiresIn:"1h"});
-    
+    const token = jwt.sign(
+      { id: existingUser, role: existingUser.role },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
     return res.status(200).send({
       message: "Login successful.",
       success: true,
@@ -113,13 +113,31 @@ export const userRegister = async (req, res) => {
 
     await newUser.save();
 
+    // Create and save Customer document if the role is 'Customer'
+    let newCustomer;
+    if (role === "Customer") {
+      newCustomer = new CustomerModel({
+        userID: newUser._id,
+        fullName: name,
+        address: address.city + ", " + address.location,
+        phoneNumber: phone_no,
+      });
+
+      await newCustomer.save();
+    }
+
     // Generate JWT token
-    const token = jwt.sign({ id: newUser._id, role: newUser.role }, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: newUser._id, role: newUser.role },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
 
     return res.status(201).send({
       message: "User registered successfully.",
       success: true,
-      user: newUser,
+      Customer: newCustomer,
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -141,12 +159,8 @@ export const purchasePlan = async (req, res) => {
       });
     }
 
-    const user = await UserModel.findById(customerId);
+    const user = await CustomerModel.findById(customerId);
     const chosenPlan = await plansModel.findById(planId);
-
-    console.log("====================================");
-    console.log(user, chosenPlan);
-    console.log("====================================");
 
     if (!user || !chosenPlan) {
       return res.status(404).send({
@@ -155,16 +169,14 @@ export const purchasePlan = async (req, res) => {
       });
     }
 
-    if (user.Current_Plan) {
-      return res.status(400).send({
-        message: "You already have an ongoing plan.",
-        success: false,
-      });
-    }
+    user.Current_Plan = {
+      plan: planId,
+      startingDate: new Date(),
+      validTill: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      vendorId: chosenPlan.offeredBy,
+    };
 
-    user.Current_Plan = planId;
-    const { offeredBy } = chosenPlan;
-    const vendor = await VendorModel.findById(offeredBy);
+    const vendor = await VendorModel.findById(chosenPlan.offeredBy);
 
     if (!vendor) {
       return res.status(404).send({
