@@ -1,15 +1,14 @@
 import bcrypt from "bcryptjs";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import UserModel from "../models/User-model.js";
 import VendorModel from "../models/vendor-model.js";
 import PlanModel from "../models/plans-model.js";
 
 // Load environment variables from .env file
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
-
 
 // vender login
 export const vendorLogin = async (req, res) => {
@@ -39,7 +38,12 @@ export const vendorLogin = async (req, res) => {
     // }
 
     // Generate JWT token
-    const token = jwt.sign({ id: existingUser._id, role: existingUser.role }, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: existingUser._id, role: existingUser.role },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+    res.cookies(token);
     return res.status(200).send({
       message: "Login successful.",
       success: true,
@@ -102,8 +106,14 @@ export const vendorRegister = async (req, res) => {
       Gst_No,
     });
 
-     // Generate JWT token
-     const token = jwt.sign({ id: newUser._id, role: newUser.role }, SECRET_KEY, { expiresIn: "1h" });
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: newUser._id, role: newUser.role },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.cookies("Token", token);
 
     res
       .status(201)
@@ -118,7 +128,14 @@ export const createPlan = async (req, res) => {
   const { vendorId } = req.params;
   const { planName, description, planType, price, duration } = req.body;
 
-  if (!planName || !description || !planType || !price || !duration || !vendorId) {
+  if (
+    !planName ||
+    !description ||
+    !planType ||
+    !price ||
+    !duration ||
+    !vendorId
+  ) {
     return res.status(400).send({
       message: "The plan details are incomplete.",
       success: false,
@@ -143,7 +160,9 @@ export const createPlan = async (req, res) => {
     vendor.ListOfPlansOffered.push(newPlan._id);
     await vendor.save();
 
-    res.status(201).json({ message: "Plan created successfully", plan: newPlan });
+    res
+      .status(201)
+      .json({ message: "Plan created successfully", plan: newPlan });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -155,7 +174,10 @@ export const getAllVendors = async (req, res) => {
   try {
     const vendors = await VendorModel.find()
       .populate("userID", "name email address phone_no")
-      .populate("ListOfPlansOffered", "planName description planType price duration");
+      .populate(
+        "ListOfPlansOffered",
+        "planName description planType price duration"
+      );
 
     res.status(200).json({
       success: true,
