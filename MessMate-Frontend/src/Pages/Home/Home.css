@@ -9,17 +9,6 @@
   }
 }
 
-@keyframes blockAnimation {
-  from {
-    opacity: 0;
-    transform: rotate(-360deg) scale(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-  }
-}
-
 .home-container {
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
@@ -29,6 +18,8 @@
   animation: appear linear;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  background-color: rgb(195, 204, 211);
+  margin-top: 60px; /* Adjust based on your navbar height */
 }
 
 .home-container::-webkit-scrollbar {
@@ -45,28 +36,8 @@ section {
   transition: all 0.8s ease-in-out;
 }
 
-.one {
-  background-color: rgb(36, 164, 138);
-}
-
-.two {
-  background-color: rgb(211, 79, 79);
-}
-
-.three {
-  background-color: rgb(67, 91, 175);
-}
-
-.four {
-  background-color: rgb(191, 64, 191);
-}
-
-.block {
-  width: 40%;
-  height: 40%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: blue;
-  animation: blockAnimation 1.5s ease-in-out;
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

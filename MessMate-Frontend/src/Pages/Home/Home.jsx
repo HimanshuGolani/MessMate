@@ -1,11 +1,13 @@
 import React from "react";
 import "./Home.css";
+import mainLogo from "../../assets/mainLogo.svg";
+
 const Home = () => {
   return (
     <>
       <div className="home-container">
         <section className="one">
-          <div className="block">Section 1</div>
+          <img src={mainLogo} alt="Main Logo" className="main-image" />
         </section>
         <section className="two">
           <div className="block">Section 2</div>
