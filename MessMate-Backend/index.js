@@ -3,6 +3,7 @@ import "dotenv/config";
 import connectionWithDb from "./Database_Connect/connectionWithDb.js";
 import CustomerRouter from "./router/Customer-router.js";
 import vendorRouter from "./router/Vender-router.js";
+import commentRouter from "./router/Comment-router.js";
 
 // initializing APP
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 // setting up routes
 app.use("/api/v1/user", CustomerRouter);
 app.use("/api/v1/vender", vendorRouter);
+app.use("/api/v1/comment",commentRouter);
 
 // connecting to mongoDb
 connectionWithDb();
