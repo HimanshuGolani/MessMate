@@ -30,13 +30,9 @@ export const addComment = async (req, res) => {
 
 // Get all comments for a plan
 export const getComments = async (req, res) => {
-  const { planId } = req.params;
-
-  console.log("====================================");
-  console.log(planId);
-  console.log("====================================");
-
   try {
+    const { planId } = req.params;
+
     const findPlan = await Plan.findById(planId).populate("comments");
 
     if (!findPlan) {
