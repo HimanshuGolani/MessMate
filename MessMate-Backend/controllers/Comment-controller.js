@@ -1,6 +1,5 @@
 import Plan from "../models/plans-model.js";
 import Comment from "../models/Comments-model.js";
-import CommentsModel from "../models/Comments-model.js";
 
 // Add a new comment to a plan
 export const addComment = async (req, res) => {
@@ -8,7 +7,7 @@ export const addComment = async (req, res) => {
   const { customerId, vendorId, comment, rating } = req.body;
 
   try {
-    const newComment = new Comment({
+    const newComment = new Comment.create({
       customerId,
       vendorId,
       planId,

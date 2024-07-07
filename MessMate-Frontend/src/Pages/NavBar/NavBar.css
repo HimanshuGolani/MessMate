@@ -1,14 +1,15 @@
 /* NavBar.css */
 
 .navbar {
-  background-color: #1976d2;
-  color: white;
+  background-color: #fae5d3;
+  color: black;
   padding: 0.5rem 1rem;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
+  border-bottom: 1px solid #82644c;
 }
 
 .container {
