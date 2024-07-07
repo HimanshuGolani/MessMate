@@ -21,11 +21,10 @@ const MealTrackSchema = new mongoose.Schema({
     required: true,
     index: true,
   },
-  userIdOfVendor: {
+  planId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Vendor",
+    ref: "Plan",
     required: true,
-    index: true,
   },
 });
 

@@ -24,6 +24,12 @@ const customerSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vendor",
     },
+    canceledMealsList: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MealTracker",
+      },
+    ],
   },
   PreviousPlans: [
     {
@@ -38,12 +44,6 @@ const customerSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Vendor",
       },
-    },
-  ],
-  mealTrackers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "MealTracker",
     },
   ],
 });
