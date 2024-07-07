@@ -1,6 +1,7 @@
 import CustomerModel from "../models/Customer-model.js";
 import MealTrackerModel from "../models/DailyMealTracker-model.js";
 import PlanModel from "../models/plans-model.js";
+import vendorModel from "../models/vendor-model.js";
 
 export const cancellationHandler = async (req, res) => {
   try {
@@ -48,6 +49,8 @@ export const cancellationHandler = async (req, res) => {
 
     customer.Current_Plan.canceledMealsList.push(cancelRequest._id);
 
+    await customer.save();
+
     return res.status(200).send({
       success: true,
       message: "meal canceled succesfully.",
@@ -58,5 +61,47 @@ export const cancellationHandler = async (req, res) => {
       message: "Internal server error.",
       success: false,
     });
+  }
+};
+
+export const canceledMealsList = async (req, res) => {
+  const { vendorId } = req.body;
+
+  try {
+    // Find the vendor by ID and populate the ListOfCustomers field
+    const vendor = await vendorModel
+      .findById(vendorId)
+      .populate("ListOfCustomers");
+
+    if (!vendor) {
+      return res.status(404).send({ message: "The vendor was not found" });
+    }
+
+    // Extract ListOfCustomers from the vendor object
+    const { ListOfCustomers } = vendor;
+
+    // Initialize canceledMealsList as an empty array
+    let canceledMealsList = [];
+
+    // Check if ListOfCustomers is not empty and has at least one customer
+    if (ListOfCustomers.length > 0) {
+      const firstCustomer = ListOfCustomers[0];
+      const currentPlan = firstCustomer.Current_Plan || {};
+      canceledMealsList = currentPlan.canceledMealsList || [];
+    }
+
+    // Fetch details of canceled meals using MealTrackerModel
+    const todaysCancelationList = await Promise.all(
+      canceledMealsList.map(async (mealId) => {
+        const user = await MealTrackerModel.findById(mealId);
+        return user;
+      })
+    );
+
+    // Respond with the list of canceled meals
+    res.status(200).send(todaysCancelationList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Internal server error" });
   }
 };
