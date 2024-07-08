@@ -61,16 +61,16 @@ export const userLogin = async (req, res) => {
 
     //Generate JWT token
     const token = jwt.sign(
-      { id: existingUser, role: existingUser.role },
+      { id: existingUser._id, role: existingUser.role },
       SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "10h" }
     );
 
-    res.cookies("Token", token);
-    return res.status(200).send({
+    return res.status(200).cookie("token", token).send({
       message: "Login successful.",
       success: true,
       user: existingUser,
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -134,7 +134,7 @@ export const userRegister = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.cookies("Token", token);
+    res.cookie("Token", token);
     return res.status(201).send({
       message: "User registered successfully.",
       success: true,

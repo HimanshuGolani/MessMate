@@ -5,7 +5,8 @@ import CustomerRouter from "./router/Customer-router.js";
 import vendorRouter from "./router/Vender-router.js";
 import commentRouter from "./router/Comment-router.js";
 import mealCancelationRouter from "./router/MealCanelation-router.js";
-
+import cookieParser from "cookie-parser";
+import cors from "cors";
 // initializing APP
 const app = express();
 
@@ -13,6 +14,8 @@ const PORT = process.env.PORT || 5001;
 
 // seting up middle wears
 app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
 
 // setting up routes
 app.use("/api/v1/user", CustomerRouter);

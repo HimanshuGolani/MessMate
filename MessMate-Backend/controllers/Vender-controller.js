@@ -43,7 +43,7 @@ export const vendorLogin = async (req, res) => {
       SECRET_KEY,
       { expiresIn: "1h" }
     );
-    res.cookies(token);
+    res.cookie(token);
     return res.status(200).send({
       message: "Login successful.",
       success: true,
@@ -113,7 +113,7 @@ export const vendorRegister = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.cookies("Token", token);
+    res.cookie("Token", token);
 
     res
       .status(201)
