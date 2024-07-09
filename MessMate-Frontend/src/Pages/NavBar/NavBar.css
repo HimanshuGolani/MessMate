@@ -1,12 +1,105 @@
+/* Base styles for the header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #fae5d3;
-  height: 9.6rem;
-  padding: 0 4.8rem;
+  padding: 0 4.8rem; /* Adjust padding as needed */
+  font-weight: 700;
 }
+
+/* Logo styles */
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
+}
+
+/* Main navigation container */
+.main-nav {
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation list styles */
+.main-nav-list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* Adjusted for spacing between items */
+  margin: 0;
+  padding: 0;
+}
+
+/* Navigation link styles */
+.main-nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 1.4rem; /* Adjusted font size */
+  padding: 1rem; /* Adjusted padding for touch areas */
+  transition: all 0.3s;
+}
+
+/* Hover and active state for navigation links */
+.main-nav-link:hover,
+.main-nav-link:active {
+  color: #cf711f;
+}
+
+/* Call-to-action button styles */
+.main-nav-link.nav-cta {
+  padding: 1rem 2rem; /* Adjusted padding for larger touch areas */
+  border-radius: 9px;
+  color: #fff;
+  background-color: #e67e22;
+}
+
+.main-nav-link.nav-cta:hover,
+.main-nav-link.nav-cta:active {
+  background-color: #cf711f;
+}
+
+/* Logout button styles */
+.btn--logout {
+  background-color: white;
+  border: none;
+  border-radius: 15px;
+  color: #e67e22;
+  font-weight: 700;
+  font-size: 1.4rem; /* Adjusted font size */
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 1rem 2rem; /* Adjusted padding for larger touch areas */
+}
+
+.btn--logout:hover,
+.btn--logout:active {
+  background-color: #cf711f;
+  color: #896603; /* Adjusted color for contrast */
+  text-decoration: underline;
+}
+
+/* Media query for responsiveness */
+@media screen and (max-width: 768px) {
+  .header {
+    padding: 0 2rem; /* Adjusted padding for smaller screens */
+    height: auto; /* Allow header height to adjust */
+  }
+
+  .logo {
+    font-size: 1.2rem; /* Adjusted font size for smaller screens */
+  }
+
+  .main-nav-list {
+    flex-direction: column; /* Stack items vertically */
+    gap: 1rem; /* Adjusted gap between items */
+    text-align: center; /* Center align items */
+  }
+
+  .main-nav-link,
+  .main-nav-link.nav-cta,
+  .btn--logout {
+    padding: 1rem; /* Adjusted padding for smaller touch areas */
+    font-size: 1.4rem; /* Adjusted font size for smaller screens */
+  }
 }

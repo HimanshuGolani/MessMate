@@ -46,7 +46,6 @@ function Login() {
 
     setUserId(user._id);
     setUserName(user.name);
-    console.log("The cookie is : ", cookies.user);
   };
 
   const handelSubmit = async (e) => {

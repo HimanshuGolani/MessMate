@@ -6,6 +6,8 @@
 
 html {
   font-size: 62.5%;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 body {
@@ -14,4 +16,9 @@ body {
   font-weight: 600;
   color: #555;
   background-color: #fae5d3;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
