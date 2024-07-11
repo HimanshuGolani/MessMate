@@ -12,17 +12,11 @@ const NavBar = () => {
 
   return (
     <header className="header">
-      {" "}
-      {/* Apply header class */}
       <div className="logo">
         <h1 className="heading-primary">Mess-Mate</h1>
       </div>
       <nav className="main-nav">
-        {" "}
-        {/* Apply main-nav class */}
         <ul className="main-nav-list">
-          {" "}
-          {/* Apply main-nav-list class */}
           {cookies.user ? (
             <>
               <li>
@@ -31,12 +25,12 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="main-nav-link" to="/">
+                <Link className="main-nav-link" to="/searchVendors">
                   Search Vendors near you
                 </Link>
               </li>
               <li>
-                <Link className="main-nav-link" to="/">
+                <Link className="main-nav-link" to="/profile">
                   Profile
                 </Link>
               </li>
@@ -54,12 +48,12 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="main-nav-link" to="/login">
+                <Link className="main-nav-link" to="/signup">
                   Sign-up
                 </Link>
               </li>
               <li>
-                <Link className="main-nav-link" to="/">
+                <Link className="main-nav-link" to="/searchVendors">
                   Search Vendors near you
                 </Link>
               </li>
