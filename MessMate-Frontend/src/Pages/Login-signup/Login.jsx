@@ -3,13 +3,12 @@ import axios from "axios";
 import "./Login-signup.css";
 import { useAppState } from "../../Context/AppState";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
-  const { setUserId, setUserName } = useAppState();
+  const { BASE_URL, setUserId, setUserName, setCookies } = useAppState();
   const navigate = useNavigate();
-
-  const [cookies, setCookies] = useCookies(["user"]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -31,37 +30,40 @@ function Login() {
   };
 
   const loginRequest = async () => {
-    const REQUEST_URL =
-      loginType === "Customer"
-        ? `http://localhost:8080/api/v1/user/login`
-        : `http://localhost:8080/api/v1/vender/loginVendor`;
-    const response = await axios.post(REQUEST_URL, {
-      email: formData.email,
-      password: formData.password,
-    });
+    try {
+      const REQUEST_URL =
+        loginType === "Customer"
+          ? `${BASE_URL}/user/login`
+          : `${BASE_URL}/vender/loginVendor`;
+      const response = await axios.post(REQUEST_URL, {
+        email: formData.email,
+        password: formData.password,
+      });
+      toast.success("Login successful!");
 
-    setCookies("user", response.data.token);
-
-    const { user } = response.data;
-
-    setUserId(user._id);
-    setUserName(user.name);
+      setCookies("user", response.data.token);
+      const { user } = response.data;
+      setUserId(user._id);
+      setUserName(user.name);
+      navigate("/");
+    } catch (error) {
+      toast.error("Login failed. Please try again.");
+      console.error("Login error:", error);
+    }
   };
 
   const handelSubmit = async (e) => {
     e.preventDefault();
     await loginRequest();
-    navigate("/");
   };
 
   return (
     <div className="login-container">
-      {/* Heading of the page */}
+      <ToastContainer />
       <div className="login-header">
         <h2>Login Form</h2>
       </div>
 
-      {/* Login type choice option */}
       <div className="login-type-choice-input">
         <label className="form-label">Login as a?</label>
         <select

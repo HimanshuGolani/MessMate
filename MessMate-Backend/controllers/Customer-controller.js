@@ -134,11 +134,11 @@ export const userRegister = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.cookie("Token", token);
-    return res.status(201).send({
+    return res.status(201).cookie("token", token).send({
       message: "User registered successfully.",
       success: true,
       Customer: newCustomer,
+      token,
     });
   } catch (error) {
     console.log(error);

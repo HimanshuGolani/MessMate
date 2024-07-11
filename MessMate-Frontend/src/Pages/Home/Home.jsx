@@ -2,6 +2,7 @@ import React from "react";
 import "./Home.css";
 import HeroImage from "../../assets/img/hero.png";
 import { Link } from "react-router-dom";
+import { useAppState } from "../../Context/AppState";
 
 const Home = () => {
   return (

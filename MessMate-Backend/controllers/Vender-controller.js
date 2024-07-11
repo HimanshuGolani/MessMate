@@ -43,11 +43,12 @@ export const vendorLogin = async (req, res) => {
       SECRET_KEY,
       { expiresIn: "1h" }
     );
-    res.cookie(token);
-    return res.status(200).send({
+
+    return res.status(200).cookie("token", token).send({
       message: "Login successful.",
       success: true,
       user: existingUser,
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -111,12 +112,16 @@ export const vendorRegister = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.cookie("Token", token);
-
     res
       .status(201)
-      .json({ message: "Vendor registered successfully", newVendor });
+      .cookie("token", token)
+      .send({
+        message: "Vendor registered successfully",
+        Vendor: newVendor,
+        token,
+      });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

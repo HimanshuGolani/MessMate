@@ -1,67 +1,211 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./NavBar.css"; // Import your CSS file
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { useCookies } from "react-cookie";
 
 const NavBar = () => {
   const [cookies, setCookies, removeCookies] = useCookies(["user"]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogout = () => {
     removeCookies("user");
+    handleMenuClose();
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
-    <header className="header">
-      <div className="logo">
-        <h1 className="heading-primary">Mess-Mate</h1>
-      </div>
-      <nav className="main-nav">
-        <ul className="main-nav-list">
-          {cookies.user ? (
-            <>
-              <li>
-                <Link className="main-nav-link" to="/">
+    <AppBar
+      position="sticky"
+      style={{ backgroundColor: "#f0a15b", padding: "0 1rem" }}
+    >
+      <Toolbar>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, fontSize: "1.8rem" }}
+        >
+          Mess-Mate
+        </Typography>
+        <div className="nav-links">
+          {/* Desktop Menu */}
+          <div className="desktop-menu">
+            {cookies.user ? (
+              <>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
                   Home
-                </Link>
-              </li>
-              <li>
-                <Link className="main-nav-link" to="/searchVendors">
-                  Search Vendors near you
-                </Link>
-              </li>
-              <li>
-                <Link className="main-nav-link" to="/profile">
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/searchVendors"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
+                  Search Vendors
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/profile"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
                   Profile
-                </Link>
-              </li>
-              <li>
-                <button className="btn btn--logout" onClick={handleLogout}>
+                </Button>
+                <Button
+                  color="inherit"
+                  onClick={handleLogout}
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
                   Logout
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link className="main-nav-link" to="/login">
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
+                  Home
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/login"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
                   Login
-                </Link>
-              </li>
-              <li>
-                <Link className="main-nav-link" to="/signup">
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/signup"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
                   Sign-up
-                </Link>
-              </li>
-              <li>
-                <Link className="main-nav-link" to="/searchVendors">
-                  Search Vendors near you
-                </Link>
-              </li>
-            </>
-          )}
-        </ul>
-      </nav>
-    </header>
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/searchVendors"
+                  sx={{
+                    fontSize: "1.4rem",
+                    display: { xs: "none", md: "inline-block" },
+                  }}
+                >
+                  Search Vendors
+                </Button>
+              </>
+            )}
+          </div>
+          {/* Hamburger Menu */}
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleMenuOpen}
+            sx={{ display: { xs: "block", md: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            {cookies.user ? (
+              <>
+                <MenuItem component={Link} to="/" onClick={handleMenuClose}>
+                  Home
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/searchVendors"
+                  onClick={handleMenuClose}
+                >
+                  Search Vendors
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/profile"
+                  onClick={handleMenuClose}
+                >
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </>
+            ) : (
+              <>
+                <MenuItem component={Link} to="/" onClick={handleMenuClose}>
+                  Home
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/login"
+                  onClick={handleMenuClose}
+                >
+                  Login
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/signup"
+                  onClick={handleMenuClose}
+                >
+                  Sign-up
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/searchVendors"
+                  onClick={handleMenuClose}
+                >
+                  Search Vendors
+                </MenuItem>
+              </>
+            )}
+          </Menu>
+        </div>
+      </Toolbar>
+    </AppBar>
   );
 };
 
