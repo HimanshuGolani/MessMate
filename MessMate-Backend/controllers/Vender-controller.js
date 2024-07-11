@@ -62,9 +62,7 @@ export const vendorLogin = async (req, res) => {
 export const vendorRegister = async (req, res) => {
   const { name, email, password, address, phone_no, businessName, Gst_No } =
     req.body;
-  console.log("====================================");
-  console.log(name, email, password, address, phone_no, businessName, Gst_No);
-  console.log("====================================");
+
   if (
     !name ||
     !email ||

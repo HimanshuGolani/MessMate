@@ -7,7 +7,6 @@
 .form-wrapper {
   width: 100%;
   max-width: 60rem;
-  /* background-color: var(--box-background-color); */
   background-color: #ffffffa9;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -31,6 +30,16 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--text-color);
+}
+
+.role-input {
+font-size: 1.6rem;
+}
+
+.role-select{
+  padding: 1rem;
+  border: 2px solid black;
+  border-radius: 2px solid var(--primary-color);
 }
 
 .input-box {
