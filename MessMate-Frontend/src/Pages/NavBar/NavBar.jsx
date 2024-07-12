@@ -36,7 +36,7 @@ const NavBar = () => {
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, fontSize: "1.8rem" }}
+          sx={{ flexGrow: 1, fontSize: "2.8rem" }}
         >
           Mess-Mate
         </Typography>
@@ -59,13 +59,13 @@ const NavBar = () => {
                 <Button
                   color="inherit"
                   component={Link}
-                  to="/searchVendors"
+                  to="/AllVendors"
                   sx={{
                     fontSize: "1.4rem",
                     display: { xs: "none", md: "inline-block" },
                   }}
                 >
-                  Search Vendors
+                  All Vendors
                 </Button>
                 <Button
                   color="inherit"
@@ -127,13 +127,13 @@ const NavBar = () => {
                 <Button
                   color="inherit"
                   component={Link}
-                  to="/searchVendors"
+                  to="/AllVendors"
                   sx={{
                     fontSize: "1.4rem",
                     display: { xs: "none", md: "inline-block" },
                   }}
                 >
-                  Search Vendors
+                  All Vendors
                 </Button>
               </>
             )}
@@ -160,10 +160,10 @@ const NavBar = () => {
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="/searchVendors"
+                  to="/AllVendors"
                   onClick={handleMenuClose}
                 >
-                  Search Vendors
+                  All Vendors
                 </MenuItem>
                 <MenuItem
                   component={Link}
@@ -195,10 +195,10 @@ const NavBar = () => {
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="/searchVendors"
+                  to="/AllVendors"
                   onClick={handleMenuClose}
                 >
-                  Search Vendors
+                  All Vendors
                 </MenuItem>
               </>
             )}

@@ -30,6 +30,12 @@ const vendorSchema = new mongoose.Schema({
       ref: "Customer",
     },
   ],
+
+  imageOfMess: {
+    type: String,
+  },
+
+  registeredOn: { type: Date, default: Date.now },
 });
 
 export default mongoose.model("Vendor", vendorSchema);

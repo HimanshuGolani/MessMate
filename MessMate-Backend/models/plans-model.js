@@ -9,6 +9,10 @@ const planSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  menuImage: {
+    type: String,
+    required: true,
+  },
   planType: {
     type: String,
     enum: ["Lunch", "Dinner", "Both"],

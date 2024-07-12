@@ -34,6 +34,7 @@ export default function Signup() {
     businessName: "",
     phone_no: "",
     Gst_No: "",
+    image: "",
   });
 
   const handleChange = (e) => {
@@ -66,10 +67,24 @@ export default function Signup() {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVendorForm((prevData) => ({
+          ...prevData,
+          image: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const nextStep = () => setCurrentStep((prevStep) => prevStep + 1);
   const prevStep = () => setCurrentStep((prevStep) => prevStep - 1);
 
-  const handelSubmit = async () => {
+  const handleSubmit = async () => {
     try {
       if (role === "Customer") {
         const response = await axios.post(`${BASE_URL}/user/createUser`, {
@@ -95,6 +110,7 @@ export default function Signup() {
           phone_no: vendorForm.phone_no,
           businessName: vendorForm.businessName,
           Gst_No: vendorForm.Gst_No,
+          image: vendorForm.image,
         });
         toast.success("Vendor created successfully!");
         const { userID, businessName, token } = response.data.Vendor;
@@ -306,11 +322,23 @@ export default function Signup() {
                 className="input-box"
               />
             </div>
+            <div className="input-field">
+              <label className="input-label" htmlFor="image">
+                Image of the Mess Building
+              </label>
+              <input
+                id="image"
+                name="image"
+                type="file"
+                onChange={handleImageChange}
+                className="input-box"
+              />
+            </div>
             <div className="button-group">
               <button onClick={prevStep} className="button button-back">
                 Back
               </button>
-              <button onClick={handelSubmit} className="button button-next">
+              <button onClick={handleSubmit} className="button button-next">
                 Submit
               </button>
             </div>
@@ -362,7 +390,7 @@ export default function Signup() {
               <button onClick={prevStep} className="button button-back">
                 Back
               </button>
-              <button onClick={handelSubmit} className="button button-submit">
+              <button onClick={handleSubmit} className="button button-submit">
                 Submit
               </button>
             </div>

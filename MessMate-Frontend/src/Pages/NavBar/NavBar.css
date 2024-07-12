@@ -1,5 +1,4 @@
-/* Base styles for the header */
-.header {
+Base styles for the header .header {
   display: flex;
   justify-content: space-between;
   align-items: center;

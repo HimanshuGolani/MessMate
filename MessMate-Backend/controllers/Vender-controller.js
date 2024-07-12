@@ -61,8 +61,16 @@ export const vendorLogin = async (req, res) => {
 
 // vender signup
 export const vendorRegister = async (req, res) => {
-  const { name, email, password, address, phone_no, businessName, Gst_No } =
-    req.body;
+  const {
+    name,
+    email,
+    password,
+    address,
+    imageOfMess,
+    phone_no,
+    businessName,
+    Gst_No,
+  } = req.body;
 
   if (
     !name ||
@@ -93,6 +101,7 @@ export const vendorRegister = async (req, res) => {
       email,
       password: hashedPassword,
       address,
+
       phone_no,
       role: "Vendor",
     });
@@ -102,6 +111,7 @@ export const vendorRegister = async (req, res) => {
       businessName,
       businessAddress: newUser.address,
       businessPhone: phone_no,
+      imageOfMess,
       Gst_No,
     });
 
@@ -112,14 +122,11 @@ export const vendorRegister = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res
-      .status(201)
-      .cookie("token", token)
-      .send({
-        message: "Vendor registered successfully",
-        Vendor: newVendor,
-        token,
-      });
+    res.status(201).cookie("token", token).send({
+      message: "Vendor registered successfully",
+      Vendor: newVendor,
+      token,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -129,7 +136,8 @@ export const vendorRegister = async (req, res) => {
 // function from where the vendors can create plans
 export const createPlan = async (req, res) => {
   const { vendorId } = req.params;
-  const { planName, description, planType, price, duration } = req.body;
+  const { planName, description, menuImage, planType, price, duration } =
+    req.body;
 
   if (
     !planName ||
@@ -137,7 +145,8 @@ export const createPlan = async (req, res) => {
     !planType ||
     !price ||
     !duration ||
-    !vendorId
+    !vendorId ||
+    !menuImage
   ) {
     return res.status(400).send({
       message: "The plan details are incomplete.",
@@ -157,6 +166,7 @@ export const createPlan = async (req, res) => {
       planType,
       price,
       duration,
+      menuImage,
       offeredBy: vendor._id,
     });
 
