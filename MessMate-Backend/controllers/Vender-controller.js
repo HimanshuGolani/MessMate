@@ -1,14 +1,7 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import UserModel from "../models/User-model.js";
 import VendorModel from "../models/vendor-model.js";
 import PlanModel from "../models/plans-model.js";
-
-// Load environment variables from .env file
-import dotenv from "dotenv";
-dotenv.config();
-
-const SECRET_KEY = process.env.SECRET_KEY;
 
 // vender login
 export const vendorLogin = async (req, res) => {
@@ -37,18 +30,10 @@ export const vendorLogin = async (req, res) => {
     //   return res.status(403).json({ message: "Access Denied" });
     // }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: existingUser._id, role: existingUser.role },
-      SECRET_KEY,
-      { expiresIn: "1h" }
-    );
-
-    return res.status(200).cookie("token", token).send({
+    return res.status(200).send({
       message: "Login successful.",
       success: true,
       user: existingUser,
-      token,
     });
   } catch (error) {
     console.log(error);
@@ -101,7 +86,6 @@ export const vendorRegister = async (req, res) => {
       email,
       password: hashedPassword,
       address,
-
       phone_no,
       role: "Vendor",
     });
@@ -115,17 +99,9 @@ export const vendorRegister = async (req, res) => {
       Gst_No,
     });
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: newUser._id, role: newUser.role },
-      SECRET_KEY,
-      { expiresIn: "1h" }
-    );
-
-    res.status(201).cookie("token", token).send({
+    res.status(201).send({
       message: "Vendor registered successfully",
       Vendor: newVendor,
-      token,
     });
   } catch (error) {
     console.log(error);

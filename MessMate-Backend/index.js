@@ -7,6 +7,7 @@ import commentRouter from "./router/Comment-router.js";
 import mealCancelationRouter from "./router/MealCanelation-router.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
 // initializing APP
 const app = express();
 
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 5001;
 
 // seting up middle wears
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
 
