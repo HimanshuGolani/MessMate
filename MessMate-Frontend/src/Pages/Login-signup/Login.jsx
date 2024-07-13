@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
-  const { BASE_URL, setUserId, setUserName, setCookies } = useAppState();
+  const { BASE_URL, setUserId, setUserName, setIsAuth } = useAppState();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -35,16 +35,17 @@ function Login() {
         loginType === "Customer"
           ? `${BASE_URL}/user/login`
           : `${BASE_URL}/vender/loginVendor`;
+
       const response = await axios.post(REQUEST_URL, {
         email: formData.email,
         password: formData.password,
       });
       toast.success("Login successful!");
 
-      setCookies("user", response.data.token);
       const { user } = response.data;
       setUserId(user._id);
       setUserName(user.name);
+      setIsAuth(true);
       navigate("/");
     } catch (error) {
       toast.error("Login failed. Please try again.");
@@ -52,7 +53,7 @@ function Login() {
     }
   };
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     await loginRequest();
   };
@@ -82,7 +83,7 @@ function Login() {
         </select>
       </div>
 
-      <form className="form" onSubmit={handelSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <label className="form-label">Enter Your Email</label>
         <input
           className="input-txt"

@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
-  const { BASE_URL, setUserId, setUserName, setCookies } = useAppState();
+  const { BASE_URL, setUserId, setUserName, setIsAuth } = useAppState();
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -96,10 +96,10 @@ export default function Signup() {
           role: role,
         });
         toast.success("Customer created successfully!");
-        const { userID, fullName, token } = response.data.Customer;
+        const { userID, fullName } = response.data.Customer;
         setUserId(userID);
         setUserName(fullName);
-        setCookies("user", token);
+        setIsAuth(true);
         navigate("/");
       } else if (role === "Vendor") {
         const response = await axios.post(`${BASE_URL}/vender/createVendor`, {
@@ -113,10 +113,10 @@ export default function Signup() {
           image: vendorForm.image,
         });
         toast.success("Vendor created successfully!");
-        const { userID, businessName, token } = response.data.Vendor;
+        const { userID, businessName } = response.data.Vendor;
         setUserId(userID);
         setUserName(businessName);
-        setCookies("user", token);
+        setIsAuth(true);
         navigate("/");
       }
     } catch (error) {

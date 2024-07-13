@@ -8,14 +8,15 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useCookies } from "react-cookie";
+import { useAppState } from "../../Context/AppState";
 
 const NavBar = () => {
-  const [cookies, setCookies, removeCookies] = useCookies(["user"]);
+  const { isAuth, setIsAuth } = useAppState();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogout = () => {
-    removeCookies("user");
+    setIsAuth(false);
+    localStorage.removeItem("auth");
     handleMenuClose();
   };
 
@@ -43,7 +44,7 @@ const NavBar = () => {
         <div className="nav-links">
           {/* Desktop Menu */}
           <div className="desktop-menu">
-            {cookies.user ? (
+            {isAuth ? (
               <>
                 <Button
                   color="inherit"
@@ -153,7 +154,7 @@ const NavBar = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            {cookies.user ? (
+            {isAuth ? (
               <>
                 <MenuItem component={Link} to="/" onClick={handleMenuClose}>
                   Home

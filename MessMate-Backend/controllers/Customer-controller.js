@@ -6,8 +6,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
-const SECRET_KEY = process.env.SECRET_KEY;
-
 // to display hapy custoemrs name and their count...
 export const displayCustomersCount = async (req, res) => {
   try {
@@ -59,18 +57,10 @@ export const userLogin = async (req, res) => {
       });
     }
 
-    //Generate JWT token
-    const token = jwt.sign(
-      { id: existingUser._id, role: existingUser.role },
-      SECRET_KEY,
-      { expiresIn: "10h" }
-    );
-
-    return res.status(200).cookie("token", token).send({
+    return res.status(200).send({
       message: "Login successful.",
       success: true,
       user: existingUser,
-      token,
     });
   } catch (error) {
     console.log(error);
@@ -127,18 +117,10 @@ export const userRegister = async (req, res) => {
       await newCustomer.save();
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: newUser._id, role: newUser.role },
-      SECRET_KEY,
-      { expiresIn: "1h" }
-    );
-
-    return res.status(201).cookie("token", token).send({
+    return res.status(201).send({
       message: "User registered successfully.",
       success: true,
       Customer: newCustomer,
-      token,
     });
   } catch (error) {
     console.log(error);

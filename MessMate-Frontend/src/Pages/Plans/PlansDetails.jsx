@@ -4,7 +4,6 @@ import {
   CardHeader,
   CardMedia,
   CardContent,
-  Avatar,
   Typography,
   Grid,
   Box,
@@ -30,13 +29,19 @@ const Container = styled("div")({
   padding: "20px",
   backgroundColor: themeColors.background,
   minHeight: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 });
 
-const StyledCard = styled(Card)({
+const StyledBox = styled(Box)({
   backgroundColor: themeColors.boxBackground,
   color: themeColors.text,
-  maxWidth: 600,
-  margin: "0 auto",
+  width: "100%",
+  maxWidth: "800px",
+  padding: "20px",
+  borderRadius: "8px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
 });
 
 const PlanDetail = ({ label, value }) => (
@@ -65,43 +70,58 @@ export default function PlansDetails() {
 
   return (
     <Container>
-      <StyledCard>
+      <StyledBox>
         <CardHeader title={planName} />
-        <CardMedia component="img" height="194" image={menuImage} alt="Menu" />
+        <CardMedia component="img" height="300" image={menuImage} alt="Menu" />
         <CardContent>
           <PlanDetail label="Description" value={description} />
           <PlanDetail label="Price" value={`Rs: ${price}`} />
-          <Box mt={4}>
-            <Typography variant="h6" component="h2" color={themeColors.text}>
-              Comments
-            </Typography>
-            <List>
-              {comments.map((comment, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={comment} />
-                </ListItem>
-              ))}
-            </List>
-            <Box mt={2}>
-              <TextField
-                label="Add Comment"
-                variant="outlined"
-                fullWidth
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddComment}
-                sx={{ mt: 2 }}
-              >
-                Submit
-              </Button>
-            </Box>
-          </Box>
+
+          {/*
+             Add a login stage here: if login is true then only the comment section will be shown
+             and if the user has bought the plan, then only they can comment.
+          */}
+          {false ? (
+            <>
+              <Box mt={4}>
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  color={themeColors.text}
+                >
+                  Comments
+                </Typography>
+                <List>
+                  {comments.map((comment, index) => (
+                    <ListItem key={index}>
+                      <ListItemText primary={comment} />
+                    </ListItem>
+                  ))}
+                </List>
+                <Box mt={2}>
+                  <TextField
+                    label="Add Comment"
+                    variant="outlined"
+                    fullWidth
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddComment}
+                    sx={{ mt: 2 }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
+              </Box>
+            </>
+          ) : (
+            <></>
+          )}
         </CardContent>
-      </StyledCard>
+      </StyledBox>
     </Container>
   );
 }
