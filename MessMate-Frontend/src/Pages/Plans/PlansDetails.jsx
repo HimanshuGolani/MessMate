@@ -5,7 +5,6 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  Grid,
   Box,
   TextField,
   Button,
@@ -15,6 +14,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useLocation } from "react-router-dom";
+import { useAppState } from "../../Context/AppState";
+import axios from "axios";
 
 const themeColors = {
   primary: "#e67e22",
@@ -60,34 +61,89 @@ export default function PlansDetails() {
   const { planName, description, menuImage, price } = state;
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const { isAuth } = useAppState();
 
   const handleAddComment = () => {
+    // const response = await axios.
+    //  console.log(response.data);
+
     if (newComment.trim()) {
       setComments((prevComments) => [...prevComments, newComment]);
       setNewComment("");
     }
   };
 
+  const purchasePlan = async () => {
+    // const response = await axios
+    //  console.log(response.data);
+  };
+
   return (
     <Container>
       <StyledBox>
-        <CardHeader title={planName} />
-        <CardMedia component="img" height="300" image={menuImage} alt="Menu" />
-        <CardContent>
-          <PlanDetail label="Description" value={description} />
-          <PlanDetail label="Price" value={`Rs: ${price}`} />
-
-          {/*
-             Add a login stage here: if login is true then only the comment section will be shown
-             and if the user has bought the plan, then only they can comment.
-          */}
-          {false ? (
-            <>
+        <Card>
+          <CardHeader
+            style={{
+              textAlign: "center",
+              fontSize: "2rem",
+            }}
+            title={`The plan name is : ${planName}`}
+          />
+          <CardMedia
+            component="img"
+            height="300"
+            image={
+              "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
+            }
+            alt="Menu"
+          />
+          <CardContent
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "3rem",
+            }}
+          >
+            <PlanDetail label="Description" value={description} />
+            <PlanDetail label="Price" value={`Rs: ${price}`} />
+          </CardContent>
+          {isAuth ? (
+            <Box
+              display="flex"
+              flexDirection={{ xs: "column", sm: "column" }}
+              justifyContent="center"
+              alignItems={"center"}
+              marginBottom={"2rem"}
+            >
               <Box mt={4}>
                 <Typography
                   variant="h6"
                   component="h2"
                   color={themeColors.text}
+                  style={{
+                    fontWeight: "bold",
+                  }}
+                >
+                  Purchase the plan
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={purchasePlan}
+                  sx={{ mt: 2 }}
+                >
+                  Purchase
+                </Button>
+              </Box>
+
+              <Box mt={4} sx={{ width: "100%", maxWidth: "400px" }}>
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  color={themeColors.text}
+                  style={{
+                    fontWeight: "bold",
+                  }}
                 >
                   Comments
                 </Typography>
@@ -98,29 +154,30 @@ export default function PlansDetails() {
                     </ListItem>
                   ))}
                 </List>
-                <Box mt={2}>
-                  <TextField
-                    label="Add Comment"
-                    variant="outlined"
-                    fullWidth
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleAddComment}
-                    sx={{ mt: 2 }}
-                  >
-                    Submit
-                  </Button>
-                </Box>
+                <TextField
+                  label="Add Comment"
+                  variant="outlined"
+                  fullWidth
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  sx={{ mt: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddComment}
+                  sx={{ mt: 2 }}
+                >
+                  Submit
+                </Button>
               </Box>
-            </>
+            </Box>
           ) : (
-            <></>
+            <Typography variant="body1" color={themeColors.text} mt={4}>
+              Please log in to purchase the plan and add comments.
+            </Typography>
           )}
-        </CardContent>
+        </Card>
       </StyledBox>
     </Container>
   );
