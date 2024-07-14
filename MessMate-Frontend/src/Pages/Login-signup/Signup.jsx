@@ -5,11 +5,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { storage } from "../../firebase/firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 export default function Signup() {
   const { BASE_URL, setUserId, setUserName, setIsAuth } = useAppState();
   const navigate = useNavigate();
-
   const [currentStep, setCurrentStep] = useState(0);
   const [role, setRole] = useState("");
   const [customerForm, setCustomerForm] = useState({
@@ -23,6 +24,9 @@ export default function Signup() {
     phone_no: "",
   });
 
+  const [imgUrl, setImgUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const [vendorForm, setVendorForm] = useState({
     name: "",
     email: "",
@@ -34,7 +38,6 @@ export default function Signup() {
     businessName: "",
     phone_no: "",
     Gst_No: "",
-    image: "",
   });
 
   const handleChange = (e) => {
@@ -69,15 +72,33 @@ export default function Signup() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVendorForm((prevData) => ({
-          ...prevData,
-          image: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+      setLoading(true);
+      const storageRef = ref(storage, `vendor_images/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.log(error);
+          toast.error("Failed to upload image.");
+          setLoading(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImgUrl(downloadURL);
+            setLoading(false);
+            toast.success("Image uploaded successfully!");
+          });
+        }
+      );
     }
   };
 
@@ -85,6 +106,10 @@ export default function Signup() {
   const prevStep = () => setCurrentStep((prevStep) => prevStep - 1);
 
   const handleSubmit = async () => {
+    if (loading) {
+      toast.info("Please wait for the image to finish uploading.");
+      return;
+    }
     try {
       if (role === "Customer") {
         const response = await axios.post(`${BASE_URL}/user/createUser`, {
@@ -110,7 +135,7 @@ export default function Signup() {
           phone_no: vendorForm.phone_no,
           businessName: vendorForm.businessName,
           Gst_No: vendorForm.Gst_No,
-          image: vendorForm.image,
+          imageOfMess: imgUrl,
         });
         toast.success("Vendor created successfully!");
         const { userID, businessName } = response.data.Vendor;
@@ -156,7 +181,7 @@ export default function Signup() {
               </div>
             ) : (
               <p style={{ textAlign: "center", fontSize: "20px" }}>
-                please select a role
+                Please select a role
               </p>
             )}
           </div>
@@ -271,45 +296,6 @@ export default function Signup() {
               />
             </div>
             <div className="input-field">
-              <label className="input-label" htmlFor="phone_no">
-                Phone Number
-              </label>
-              <input
-                id="phone_no"
-                name="phone_no"
-                type="text"
-                value={vendorForm.phone_no}
-                onChange={handleChange}
-                className="input-box"
-              />
-            </div>
-            <div className="input-field">
-              <label className="input-label" htmlFor="address.city">
-                City
-              </label>
-              <input
-                id="address.city"
-                name="address.city"
-                type="text"
-                value={vendorForm.address.city}
-                onChange={handleChange}
-                className="input-box"
-              />
-            </div>
-            <div className="input-field">
-              <label className="input-label" htmlFor="address.location">
-                Location
-              </label>
-              <input
-                id="address.location"
-                name="address.location"
-                type="text"
-                value={vendorForm.address.location}
-                onChange={handleChange}
-                className="input-box"
-              />
-            </div>
-            <div className="input-field">
               <label className="input-label" htmlFor="Gst_No">
                 GST Number
               </label>
@@ -322,53 +308,65 @@ export default function Signup() {
                 className="input-box"
               />
             </div>
+
             <div className="input-field">
-              <label className="input-label" htmlFor="image">
-                Image of the Mess Building
+              <label className="input-label" htmlFor="imageOfMess">
+                Upload an Image of Your Business
               </label>
               <input
-                id="image"
-                name="image"
+                id="imageOfMess"
+                name="imageOfMess"
                 type="file"
+                accept="image/*"
                 onChange={handleImageChange}
                 className="input-box"
               />
+              {loading && <p>Uploading image...</p>}
             </div>
+
             <div className="button-group">
               <button onClick={prevStep} className="button button-back">
                 Back
               </button>
-              <button onClick={handleSubmit} className="button button-next">
-                Submit
+              <button onClick={nextStep} className="button button-next">
+                Next
               </button>
             </div>
           </div>
         )}
-        {currentStep === 2 && role === "Customer" && (
+        {currentStep === 2 && (
           <div>
-            <h2 className="step-header">Step 3: Contact Details</h2>
+            <h2 className="step-header">Step 3: Contact Information</h2>
             <div className="input-field">
-              <label className="input-label" htmlFor="address.city">
+              <label className="input-label" htmlFor="city">
                 City
               </label>
               <input
-                id="address.city"
+                id="city"
                 name="address.city"
                 type="text"
-                value={customerForm.address.city}
+                value={
+                  role === "Customer"
+                    ? customerForm.address.city
+                    : vendorForm.address.city
+                }
                 onChange={handleChange}
                 className="input-box"
               />
             </div>
             <div className="input-field">
-              <label className="input-label" htmlFor="address.location">
+              <label className="input-label" htmlFor="location">
                 Location
               </label>
               <input
-                id="address.location"
+                id="location"
                 name="address.location"
                 type="text"
-                value={customerForm.address.location}
+                value={
+                  role === "Customer"
+                    ? customerForm.address.location
+                    : vendorForm.address.location
+                }
                 onChange={handleChange}
                 className="input-box"
               />
@@ -381,16 +379,25 @@ export default function Signup() {
                 id="phone_no"
                 name="phone_no"
                 type="text"
-                value={customerForm.phone_no}
+                value={
+                  role === "Customer"
+                    ? customerForm.phone_no
+                    : vendorForm.phone_no
+                }
                 onChange={handleChange}
                 className="input-box"
               />
             </div>
+
             <div className="button-group">
               <button onClick={prevStep} className="button button-back">
                 Back
               </button>
-              <button onClick={handleSubmit} className="button button-submit">
+              <button
+                onClick={handleSubmit}
+                className="button button-submit"
+                disabled={loading}
+              >
                 Submit
               </button>
             </div>

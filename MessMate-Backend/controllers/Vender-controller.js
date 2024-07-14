@@ -2,15 +2,7 @@ import bcrypt from "bcryptjs";
 import UserModel from "../models/User-model.js";
 import VendorModel from "../models/vendor-model.js";
 import PlanModel from "../models/plans-model.js";
-<<<<<<< HEAD
-=======
-import {imageUpload} from "../controllers/fileUpload.js";
-// Load environment variables from .env file
-import dotenv from "dotenv";
-dotenv.config();
-
-const SECRET_KEY = process.env.SECRET_KEY;
->>>>>>> imageUpload
+import "dotenv/config";
 
 // vender login
 export const vendorLogin = async (req, res) => {
@@ -59,33 +51,44 @@ export const vendorRegister = async (req, res) => {
     name,
     email,
     password,
-    address,
     imageOfMess,
+    address,
     phone_no,
     businessName,
     Gst_No,
   } = req.body;
 
-  console.log(name, email, password, address, phone_no, businessName, Gst_No );
-  if (
-    !name ||
-    !email ||
-    !password ||
-    !address ||
-    !phone_no ||
-    !businessName ||
-    !Gst_No
-  ) {
-    return res.status(400).send({
-      message: "The credentials are incomplete.",
-      success: false,
-    });
-  }
+  console.log(
+    name,
+    email,
+    password,
+    imageOfMess,
+    address,
+    phone_no,
+    businessName,
+    Gst_No
+  );
+
+  // if (
+  //   !name ||
+  //   !email ||
+  //   !password ||
+  //   !address ||
+  //   !phone_no ||
+  //   !businessName ||
+  //   !Gst_No
+  // ) {
+  //   return res.status(400).send({
+  //     message: "The credentials are incomplete.",
+  //     success: false,
+  //   });
+  // }
 
   try {
     const existingUser = await UserModel.findOne({ email });
 
     if (existingUser) {
+      console.log(existingUser);
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -99,19 +102,8 @@ export const vendorRegister = async (req, res) => {
       phone_no,
       role: "Vendor",
     });
-    // Handle image upload
-     const file = req.files.imageOfMess;
-    uploadFileToCloudinary(file, "MessMate", async (err, response) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({
-          success: false,
-          message: "File upload failed",
-          error: err.message
-        });
-      }
 
-      const imageOfMess = response.secure_url;
+    await newUser.save();
 
     const newVendor = await VendorModel.create({
       userID: newUser._id,
@@ -122,11 +114,12 @@ export const vendorRegister = async (req, res) => {
       Gst_No,
     });
 
+    await newVendor.save();
+
     res.status(201).send({
       message: "Vendor registered successfully",
       Vendor: newVendor,
     });
-  });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
