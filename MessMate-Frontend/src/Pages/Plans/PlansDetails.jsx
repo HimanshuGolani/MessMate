@@ -10,7 +10,6 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useLocation } from "react-router-dom";
@@ -62,11 +61,9 @@ export default function PlansDetails() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const { isAuth } = useAppState();
+  const [showAllComments, setShowAllComments] = useState(false);
 
-  const handleAddComment = () => {
-    // const response = await axios.
-    //  console.log(response.data);
-
+  const handleAddComment = async () => {
     if (newComment.trim()) {
       setComments((prevComments) => [...prevComments, newComment]);
       setNewComment("");
@@ -77,6 +74,8 @@ export default function PlansDetails() {
     // const response = await axios
     //  console.log(response.data);
   };
+
+  const topComments = showAllComments ? comments : comments.slice(0, 3);
 
   return (
     <Container>
@@ -101,7 +100,7 @@ export default function PlansDetails() {
             style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: "3rem",
+              fontSize: "1.2rem",
             }}
           >
             <PlanDetail label="Description" value={description} />
@@ -148,12 +147,24 @@ export default function PlansDetails() {
                   Comments
                 </Typography>
                 <List>
-                  {comments.map((comment, index) => (
-                    <ListItem key={index}>
-                      <ListItemText primary={comment} />
+                  {topComments.map((comment, index) => (
+                    <ListItem key={index} className="step-box">
+                      <Typography variant="h6">{`Comment ${
+                        index + 1
+                      }`}</Typography>
+                      <Typography variant="body1">{comment}</Typography>
                     </ListItem>
                   ))}
                 </List>
+                {comments.length > 3 && (
+                  <Button
+                    variant="outlined"
+                    onClick={() => setShowAllComments((prev) => !prev)}
+                    sx={{ mt: 2 }}
+                  >
+                    {showAllComments ? "Show Less" : "Show More"}
+                  </Button>
+                )}
                 <TextField
                   label="Add Comment"
                   variant="outlined"
