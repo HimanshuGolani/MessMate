@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import UserModel from "../models/User-model.js";
 import VendorModel from "../models/vendor-model.js";
 import PlanModel from "../models/plans-model.js";
-
+import {imageUpload} from "../controllers/fileUpload.js";
 // Load environment variables from .env file
 import dotenv from "dotenv";
 dotenv.config();
@@ -72,6 +72,7 @@ export const vendorRegister = async (req, res) => {
     Gst_No,
   } = req.body;
 
+  console.log(name, email, password, address, phone_no, businessName, Gst_No );
   if (
     !name ||
     !email ||
@@ -105,6 +106,19 @@ export const vendorRegister = async (req, res) => {
       phone_no,
       role: "Vendor",
     });
+    // Handle image upload
+     const file = req.files.imageOfMess;
+    uploadFileToCloudinary(file, "MessMate", async (err, response) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: false,
+          message: "File upload failed",
+          error: err.message
+        });
+      }
+
+      const imageOfMess = response.secure_url;
 
     const newVendor = await VendorModel.create({
       userID: newUser._id,
@@ -127,6 +141,7 @@ export const vendorRegister = async (req, res) => {
       Vendor: newVendor,
       token,
     });
+  });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
