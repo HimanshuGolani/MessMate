@@ -3,6 +3,7 @@ import UserModel from "../models/User-model.js";
 import VendorModel from "../models/vendor-model.js";
 import PlanModel from "../models/plans-model.js";
 import "dotenv/config";
+import vendorModel from "../models/vendor-model.js";
 
 // vender login
 export const vendorLogin = async (req, res) => {
@@ -16,17 +17,9 @@ export const vendorLogin = async (req, res) => {
     }
     const existingUser = await UserModel.findOne({ email });
 
-    console.log("====================================");
-    console.log(existingUser);
-    console.log("====================================");
-
     const { _id } = existingUser;
 
     const user = await VendorModel.findOne({ userID: _id });
-
-    console.log("====================================");
-    console.log(user._id);
-    console.log("====================================");
 
     if (!existingUser) {
       return res.status(400).json({ message: "User not found" });
@@ -70,17 +63,6 @@ export const vendorRegister = async (req, res) => {
     businessName,
     Gst_No,
   } = req.body;
-
-  console.log(
-    name,
-    email,
-    password,
-    imageOfMess,
-    address,
-    phone_no,
-    businessName,
-    Gst_No
-  );
 
   if (
     !name ||
@@ -145,16 +127,6 @@ export const createPlan = async (req, res) => {
   const { planName, description, menuImage, planType, price, duration } =
     req.body;
 
-  console.log(
-    vendorId,
-    planName,
-    description,
-    menuImage,
-    planType,
-    price,
-    duration
-  );
-
   if (
     !planName ||
     !description ||
@@ -191,9 +163,93 @@ export const createPlan = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Plan created successfully", plan: newPlan });
+      .send({ message: "Plan created successfully", plan: newPlan });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+// A function taht lets the vendor retrieve his plans.
+// make 2
+// functions 1 to delete plan
+// one to update his plan's
+
+export const getCurrentPlans = async (req, res) => {
+  try {
+    // retrieve the vendorId from the params
+    const { vendorId } = req.params;
+    // find the vendor
+    const vendor = await VendorModel.findById(vendorId);
+    // check if the vendor exists or not ??
+    // if does not exists
+    if (!vendor) {
+      return res.status(404).send({
+        message: "Invalid VenderId",
+      });
+    }
+    // if the vendor exists then continue
+    // retrieve the plans form the vendor object
+    const { ListOfPlansOffered } = vendor;
+
+    // check if the list isEmpty
+    if (ListOfPlansOffered.length === 0) {
+      return res.status(204).send({
+        message: "the list is empty.",
+        ListOfPlansOffered,
+      });
+    }
+    // if the List has elements then send the list
+    // send the plans to the front end
+    return res.status(200).send({
+      message: "Succesfull",
+      ListOfPlansOffered,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+// a function that gives the vendor all the customers list he has.
+
+export const getListOfCustomers = async (req, res) => {
+  try {
+    // retrieve the vendorId form the params
+    const { vendorId } = req.params;
+    // serch for the vendor
+
+    const vendor = await vendorModel.findById(vendorId);
+
+    // check if the vendor exists or not.
+    if (!vendor) {
+      return res.status(404).send({
+        message: "the list is empty.",
+      });
+    }
+    // retrieve the list of customers from the vendor
+
+    const { ListOfCustomers } = vendor;
+
+    console.log(ListOfCustomers);
+
+    // ListOfCustomers.populate("");
+
+    if (ListOfCustomers.length === 0) {
+      return res.status(204).send({
+        message: "the list is empty.",
+        ListOfCustomers,
+      });
+    }
+    return res.status(200).send({
+      ListOfCustomers,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 };
 

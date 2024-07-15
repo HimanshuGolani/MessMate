@@ -37,6 +37,10 @@ const planSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
+  numberOfCustomers: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export default mongoose.model("Plan", planSchema);

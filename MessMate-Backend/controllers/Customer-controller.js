@@ -152,6 +152,9 @@ export const purchasePlan = async (req, res) => {
       });
     }
 
+    // incrementing the plans no. of customers have taken.
+    chosenPlan.numberOfCustomers = chosenPlan.numberOfCustomers + 1;
+
     user.Current_Plan = {
       plan: planId,
       startingDate: new Date(),
