@@ -58,6 +58,7 @@ const PlanDetail = ({ label, value }) => (
 export default function PlansDetails() {
   const { state } = useLocation();
   const { planName, description, menuImage, price } = state;
+  console.log(menuImage);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const { isAuth } = useAppState();
@@ -91,9 +92,7 @@ export default function PlansDetails() {
           <CardMedia
             component="img"
             height="300"
-            image={
-              "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
-            }
+            image={menuImage}
             alt="Menu"
           />
           <CardContent

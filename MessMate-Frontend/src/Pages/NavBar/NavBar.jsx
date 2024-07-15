@@ -11,8 +11,10 @@ import MenuItem from "@mui/material/MenuItem";
 import { useAppState } from "../../Context/AppState";
 
 const NavBar = () => {
-  const { isAuth, setIsAuth } = useAppState();
+  const { isAuth, setIsAuth, role } = useAppState();
   const [anchorEl, setAnchorEl] = useState(null);
+
+  console.log("The role is: ", role);
 
   const handleLogout = () => {
     setIsAuth(false);
@@ -21,11 +23,278 @@ const NavBar = () => {
   };
 
   const handleMenuOpen = (event) => {
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const renderLinks = () => {
+    if (!isAuth) {
+      return (
+        <div>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Home
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/login"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Login
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/signup"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Sign-up
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/AllVendors"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            All Vendors
+          </Button>
+        </div>
+      );
+    }
+
+    if (role === "Customer") {
+      return (
+        <div>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Home
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/AllVendors"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            All Vendors
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/your-plan"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Your Plan
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/profile"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Profile
+          </Button>
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Logout
+          </Button>
+        </div>
+      );
+    }
+
+    if (role === "Vendor") {
+      return (
+        <div>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Home
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/vender/addPlan"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Add Plans
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/todays-cancellations"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Today's Cancellations
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/customers-list"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Customer's List
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/profile"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Profile
+          </Button>
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            Logout
+          </Button>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const renderMenuItems = () => {
+    if (!isAuth) {
+      return (
+        <div>
+          <MenuItem component={Link} to="/" onClick={handleMenuClose}>
+            Home
+          </MenuItem>
+          <MenuItem component={Link} to="/login" onClick={handleMenuClose}>
+            Login
+          </MenuItem>
+          <MenuItem component={Link} to="/signup" onClick={handleMenuClose}>
+            Sign-up
+          </MenuItem>
+          <MenuItem component={Link} to="/AllVendors" onClick={handleMenuClose}>
+            All Vendors
+          </MenuItem>
+        </div>
+      );
+    }
+
+    if (role === "Customer") {
+      return (
+        <div>
+          <MenuItem component={Link} to="/" onClick={handleMenuClose}>
+            Home
+          </MenuItem>
+          <MenuItem component={Link} to="/AllVendors" onClick={handleMenuClose}>
+            All Vendors
+          </MenuItem>
+          <MenuItem component={Link} to="/your-plan" onClick={handleMenuClose}>
+            Your Plan
+          </MenuItem>
+          <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
+            Profile
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </div>
+      );
+    }
+
+    if (role === "Vendor") {
+      return (
+        <div>
+          <MenuItem component={Link} to="/" onClick={handleMenuClose}>
+            Home
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/vender/addPlan"
+            onClick={handleMenuClose}
+          >
+            Add Plans
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/todays-cancellations"
+            onClick={handleMenuClose}
+          >
+            Today's Cancellations
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/customers-list"
+            onClick={handleMenuClose}
+          >
+            Customer's List
+          </MenuItem>
+          <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
+            Profile
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </div>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -43,102 +312,7 @@ const NavBar = () => {
         </Typography>
         <div className="nav-links">
           {/* Desktop Menu */}
-          <div className="desktop-menu">
-            {isAuth ? (
-              <>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  Home
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/AllVendors"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  All Vendors
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/profile"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  Profile
-                </Button>
-                <Button
-                  color="inherit"
-                  onClick={handleLogout}
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  Home
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/login"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  Login
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/signup"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  Sign-up
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/AllVendors"
-                  sx={{
-                    fontSize: "1.4rem",
-                    display: { xs: "none", md: "inline-block" },
-                  }}
-                >
-                  All Vendors
-                </Button>
-              </>
-            )}
-          </div>
+          <div className="desktop-menu">{renderLinks()}</div>
           {/* Hamburger Menu */}
           <IconButton
             edge="end"
@@ -154,55 +328,7 @@ const NavBar = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            {isAuth ? (
-              <>
-                <MenuItem component={Link} to="/" onClick={handleMenuClose}>
-                  Home
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/AllVendors"
-                  onClick={handleMenuClose}
-                >
-                  All Vendors
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/profile"
-                  onClick={handleMenuClose}
-                >
-                  Profile
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </>
-            ) : (
-              <>
-                <MenuItem component={Link} to="/" onClick={handleMenuClose}>
-                  Home
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/login"
-                  onClick={handleMenuClose}
-                >
-                  Login
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/signup"
-                  onClick={handleMenuClose}
-                >
-                  Sign-up
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/AllVendors"
-                  onClick={handleMenuClose}
-                >
-                  All Vendors
-                </MenuItem>
-              </>
-            )}
+            {renderMenuItems()}
           </Menu>
         </div>
       </Toolbar>

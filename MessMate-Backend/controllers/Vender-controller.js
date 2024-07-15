@@ -16,6 +16,18 @@ export const vendorLogin = async (req, res) => {
     }
     const existingUser = await UserModel.findOne({ email });
 
+    console.log("====================================");
+    console.log(existingUser);
+    console.log("====================================");
+
+    const { _id } = existingUser;
+
+    const user = await VendorModel.findOne({ userID: _id });
+
+    console.log("====================================");
+    console.log(user._id);
+    console.log("====================================");
+
     if (!existingUser) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -35,6 +47,7 @@ export const vendorLogin = async (req, res) => {
       message: "Login successful.",
       success: true,
       user: existingUser,
+      vendorId: user._id,
     });
   } catch (error) {
     console.log(error);
@@ -69,20 +82,20 @@ export const vendorRegister = async (req, res) => {
     Gst_No
   );
 
-  // if (
-  //   !name ||
-  //   !email ||
-  //   !password ||
-  //   !address ||
-  //   !phone_no ||
-  //   !businessName ||
-  //   !Gst_No
-  // ) {
-  //   return res.status(400).send({
-  //     message: "The credentials are incomplete.",
-  //     success: false,
-  //   });
-  // }
+  if (
+    !name ||
+    !email ||
+    !password ||
+    !address ||
+    !phone_no ||
+    !businessName ||
+    !Gst_No
+  ) {
+    return res.status(400).send({
+      message: "The credentials are incomplete.",
+      success: false,
+    });
+  }
 
   try {
     const existingUser = await UserModel.findOne({ email });
@@ -131,6 +144,16 @@ export const createPlan = async (req, res) => {
   const { vendorId } = req.params;
   const { planName, description, menuImage, planType, price, duration } =
     req.body;
+
+  console.log(
+    vendorId,
+    planName,
+    description,
+    menuImage,
+    planType,
+    price,
+    duration
+  );
 
   if (
     !planName ||
@@ -182,7 +205,7 @@ export const getAllVendors = async (req, res) => {
       .populate("userID", "name email address phone_no")
       .populate(
         "ListOfPlansOffered",
-        "planName description planType price duration"
+        "planName description planType price menuImage duration"
       );
 
     res.status(200).json({

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import PlansDetails from "./PlansDetails";
 import PlanCard from "./PlanCard";
 
 export default function PlanContainer() {
@@ -13,7 +12,7 @@ export default function PlanContainer() {
     setPlans(ListOfPlansOffered);
   }, [ListOfPlansOffered]);
 
-  console.log("====================================");
+  console.log("The plan is : ");
   console.log(plans);
   console.log("====================================");
 

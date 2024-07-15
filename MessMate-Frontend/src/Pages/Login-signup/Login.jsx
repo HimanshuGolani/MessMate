@@ -7,7 +7,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
-  const { BASE_URL, setUserId, setUserName, setIsAuth } = useAppState();
+  const { BASE_URL, setUserId, setUserName, setIsAuth, setRole, setVendorId } =
+    useAppState();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -43,6 +44,19 @@ function Login() {
       toast.success("Login successful!");
 
       const { user } = response.data;
+
+      localStorage.setItem(`role`, loginType);
+
+      console.log("====================================");
+      console.log(response.data);
+      console.log("====================================");
+
+      if (loginType === "Vendor") {
+        const { vendorId } = response.data;
+        setVendorId(vendorId);
+      }
+
+      setRole(loginType);
       setUserId(user._id);
       setUserName(user.name);
       setIsAuth(true);

@@ -11,7 +11,7 @@ export default function AllVenders() {
   const { BASE_URL } = useAppState();
   const getAllVendors = async () => {
     const response = await axios.get(`${BASE_URL}/vender/getAllVendorDetails`);
-    console.log(response.data);
+    console.log("The plans asjh dskj", response.data);
     const { data } = response.data;
     setVendors(data);
   };
@@ -34,6 +34,7 @@ export default function AllVenders() {
                   ListOfCustomers={item.ListOfCustomers}
                   businessPhone={item.businessPhone}
                   registeredOn={item.registeredOn}
+                  imageOfMess={item.imageOfMess}
                   key={index}
                 />
               ))}

@@ -42,7 +42,7 @@ export default function PlanCard({
 
   const handleDetailsClick = () => {
     navigate(`/plansDetails/${planId}`, {
-      state: { planName, description, menuImage, price },
+      state: { planName, description, duration, menuImage, price },
     });
   };
 

@@ -24,6 +24,7 @@ export default function VendorDisplayCard({
   ListOfCustomers,
   businessPhone,
   registeredOn,
+  imageOfMess,
 }) {
   const navigate = useNavigate();
 
@@ -49,12 +50,7 @@ export default function VendorDisplayCard({
         title={businessName}
         subheader={`Since ${registeredOn}`}
       />
-      <CardMedia
-        component="img"
-        height="194"
-        src="https://www.kayak.co.in/news/wp-content/uploads/sites/76/2023/08/THEME_HOTEL_SIGN_FIVE_STARS_FACADE_BUILDING_GettyImages-1320779330-3.jpg"
-        alt="Mess-building-Image"
-      />
+      <CardMedia component="img" height="194" src={imageOfMess} />
       <CardContent sx={{ backgroundColor: "#f9f9f9" }}>
         <Typography variant="body1" color="textPrimary">
           {`City is : ${city}.`}

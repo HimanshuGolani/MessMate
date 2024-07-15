@@ -8,6 +8,7 @@ import AllVenders from "./Pages/Venders/AllVenders";
 import PlanContainer from "./Pages/Plans/PlanContainer";
 import PlansDetails from "./Pages/Plans/PlansDetails";
 import PlanCard from "./Pages/Plans/PlanCard";
+import AddPlanForm from "./vendor-pages/AddPlanForm";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/plansOffered" element={<PlanContainer />} />
           <Route path="/plan" element={<PlanCard />} />
           <Route path="/plansDetails/:id" element={<PlansDetails />} />
+          <Route path="/vender/addPlan" element={<AddPlanForm />} />
         </Routes>
       </div>
     </>
