@@ -198,7 +198,7 @@ const NavBar = () => {
           <Button
             color="inherit"
             component={Link}
-            to="/customers-list"
+            to="/vender/myCustomersList"
             sx={{
               fontSize: "1.4rem",
               display: { xs: "none", md: "inline-block" },
@@ -303,7 +303,7 @@ const NavBar = () => {
           </MenuItem>
           <MenuItem
             component={Link}
-            to="/customers-list"
+            to="/vender/myCustomersList"
             onClick={handleMenuClose}
           >
             Customer's List
@@ -322,7 +322,7 @@ const NavBar = () => {
   return (
     <AppBar
       position="sticky"
-      style={{ backgroundColor: "#f0a15b", padding: "0 1rem" }}
+      style={{ backgroundColor: "#F4A261", padding: "0 1rem" }}
     >
       <Toolbar>
         <Typography

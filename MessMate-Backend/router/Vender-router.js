@@ -3,6 +3,7 @@ import {
   createPlan,
   getAllVendors,
   getCurrentPlans,
+  getListOfCustomers,
   vendorLogin,
   vendorRegister,
 } from "../controllers/Vender-controller.js";
@@ -13,6 +14,7 @@ vendorRouter.post("/loginVendor", vendorLogin);
 vendorRouter.post("/createVendor", vendorRegister);
 vendorRouter.post("/addPlan/:vendorId", createPlan);
 vendorRouter.get("/getMyPlans/:vendorId", getCurrentPlans);
+vendorRouter.get("/getListOfCustomers/:vendorId", getListOfCustomers);
 vendorRouter.get("/getAllVendorDetails", getAllVendors);
 
 export default vendorRouter;

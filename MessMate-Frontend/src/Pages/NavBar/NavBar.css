@@ -2,8 +2,8 @@ Base styles for the header .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffca9cc1;
-  padding: 0 4.8rem; /* Adjust padding as needed */
+  background-color: #f4a261;
+  padding: 0 4.8rem;
   font-weight: 700;
 }
 
