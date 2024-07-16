@@ -61,7 +61,7 @@ export default function PlansDetails() {
   console.log(menuImage);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const { isAuth } = useAppState();
+  const { isAuth, role } = useAppState();
   const [showAllComments, setShowAllComments] = useState(false);
 
   const handleAddComment = async () => {
@@ -113,26 +113,32 @@ export default function PlansDetails() {
               alignItems={"center"}
               marginBottom={"2rem"}
             >
-              <Box mt={4}>
-                <Typography
-                  variant="h6"
-                  component="h2"
-                  color={themeColors.text}
-                  style={{
-                    fontWeight: "bold",
-                  }}
-                >
-                  Purchase the plan
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={purchasePlan}
-                  sx={{ mt: 2 }}
-                >
-                  Purchase
-                </Button>
-              </Box>
+              {role === "Vendor" ? (
+                <></>
+              ) : (
+                <>
+                  <Box mt={4}>
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      color={themeColors.text}
+                      style={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Purchase the plan
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={purchasePlan}
+                      sx={{ mt: 2 }}
+                    >
+                      Purchase
+                    </Button>
+                  </Box>
+                </>
+              )}
 
               <Box mt={4} sx={{ width: "100%", maxWidth: "400px" }}>
                 <Typography
@@ -146,14 +152,21 @@ export default function PlansDetails() {
                   Comments
                 </Typography>
                 <List>
-                  {topComments.map((comment, index) => (
-                    <ListItem key={index} className="step-box">
-                      <Typography variant="h6">{`Comment ${
-                        index + 1
-                      }`}</Typography>
-                      <Typography variant="body1">{comment}</Typography>
-                    </ListItem>
-                  ))}
+                  {comments.length === 0 ? (
+                    <>No Comments till now.</>
+                  ) : (
+                    <>
+                      {" "}
+                      {topComments.map((comment, index) => (
+                        <ListItem key={index} className="step-box">
+                          <Typography variant="h6">{`Comment ${
+                            index + 1
+                          }`}</Typography>
+                          <Typography variant="body1">{comment}</Typography>
+                        </ListItem>
+                      ))}
+                    </>
+                  )}
                 </List>
                 {comments.length > 3 && (
                   <Button
@@ -164,22 +177,29 @@ export default function PlansDetails() {
                     {showAllComments ? "Show Less" : "Show More"}
                   </Button>
                 )}
-                <TextField
-                  label="Add Comment"
-                  variant="outlined"
-                  fullWidth
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  sx={{ mt: 2 }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleAddComment}
-                  sx={{ mt: 2 }}
-                >
-                  Submit
-                </Button>
+
+                {role === "Vendor" ? (
+                  <></>
+                ) : (
+                  <>
+                    <TextField
+                      label="Add Comment"
+                      variant="outlined"
+                      fullWidth
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      sx={{ mt: 2 }}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleAddComment}
+                      sx={{ mt: 2 }}
+                    >
+                      Submit
+                    </Button>
+                  </>
+                )}
               </Box>
             </Box>
           ) : (

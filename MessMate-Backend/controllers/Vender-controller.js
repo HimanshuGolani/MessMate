@@ -3,7 +3,6 @@ import UserModel from "../models/User-model.js";
 import VendorModel from "../models/vendor-model.js";
 import PlanModel from "../models/plans-model.js";
 import "dotenv/config";
-import vendorModel from "../models/vendor-model.js";
 
 // vender login
 export const vendorLogin = async (req, res) => {
@@ -179,7 +178,11 @@ export const getCurrentPlans = async (req, res) => {
     // retrieve the vendorId from the params
     const { vendorId } = req.params;
     // find the vendor
-    const vendor = await VendorModel.findById(vendorId);
+    const vendor = await VendorModel.findById(vendorId).populate(
+      "ListOfPlansOffered",
+      "planName description planType price menuImage duration"
+    );
+
     // check if the vendor exists or not ??
     // if does not exists
     if (!vendor) {
@@ -198,6 +201,7 @@ export const getCurrentPlans = async (req, res) => {
         ListOfPlansOffered,
       });
     }
+
     // if the List has elements then send the list
     // send the plans to the front end
     return res.status(200).send({
@@ -205,6 +209,7 @@ export const getCurrentPlans = async (req, res) => {
       ListOfPlansOffered,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",

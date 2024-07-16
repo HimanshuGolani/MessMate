@@ -47,12 +47,9 @@ function Login() {
 
       localStorage.setItem(`role`, loginType);
 
-      console.log("====================================");
-      console.log(response.data);
-      console.log("====================================");
-
       if (loginType === "Vendor") {
         const { vendorId } = response.data;
+        localStorage.setItem("vendorId", vendorId);
         setVendorId(vendorId);
       }
 

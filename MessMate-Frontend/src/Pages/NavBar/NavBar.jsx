@@ -9,10 +9,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useAppState } from "../../Context/AppState";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const { isAuth, setIsAuth, role } = useAppState();
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const navigate = useNavigate();
 
   console.log("The role is: ", role);
 
@@ -20,6 +23,7 @@ const NavBar = () => {
     setIsAuth(false);
     localStorage.removeItem("auth");
     handleMenuClose();
+    navigate("/");
   };
 
   const handleMenuOpen = (event) => {
@@ -172,6 +176,17 @@ const NavBar = () => {
           <Button
             color="inherit"
             component={Link}
+            to="/vender/myPlans"
+            sx={{
+              fontSize: "1.4rem",
+              display: { xs: "none", md: "inline-block" },
+            }}
+          >
+            My Plans
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
             to="/todays-cancellations"
             sx={{
               fontSize: "1.4rem",
@@ -271,6 +286,13 @@ const NavBar = () => {
             onClick={handleMenuClose}
           >
             Add Plans
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/vender/myPlans"
+            onClick={handleMenuClose}
+          >
+            My Plans
           </MenuItem>
           <MenuItem
             component={Link}

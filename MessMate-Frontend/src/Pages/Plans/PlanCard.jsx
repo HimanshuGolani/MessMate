@@ -60,7 +60,8 @@ export default function PlanCard({
           {`The description of the plan is : ${description}`}
         </Typography>
         <Typography variant="h6" component="p" color={themeColors.text}>
-          The plan type is: {planType}
+          The plan type is:{" "}
+          {planType === "Both" ? "Lunch and Dinner" : planType}
         </Typography>
         <Typography variant="h6" component="p" color={themeColors.text}>
           The price is Rs: {price}
