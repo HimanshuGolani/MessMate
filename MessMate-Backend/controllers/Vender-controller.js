@@ -279,3 +279,83 @@ export const getAllVendors = async (req, res) => {
     });
   }
 };
+
+//update the plan
+
+export const updatePlan = async (req, res) => {
+  const { planId } = req.params;
+  const { planName, description, menuImage, planType, price, duration } = req.body;
+
+  try {
+    // Find the existing plan by ID
+    const existingPlan = await PlanModel.findById(planId);
+
+    if (!existingPlan) {
+      return res.status(404).json({ message: "Plan not found" });
+    }
+
+    // // Send the current values of the plan to the frontend
+    // if (req.method === "GET") {
+    //   return res.status(200).json({
+    //     success: true,
+    //     plan: existingPlan,
+    //   });
+    // }
+
+    // Update the plan with the new values
+    existingPlan.planName = planName || existingPlan.planName;
+    existingPlan.description = description || existingPlan.description;
+    existingPlan.menuImage = menuImage || existingPlan.menuImage;
+    existingPlan.planType = planType || existingPlan.planType;
+    existingPlan.price = price || existingPlan.price;
+    existingPlan.duration = duration || existingPlan.duration;
+
+    // Save the updated plan
+    await existingPlan.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Plan updated successfully",
+      plan: existingPlan,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Delete plan
+export const deletePlan = async (req, res) => {
+  const { planId } = req.params;
+
+  try {
+    // Find the existing plan by ID
+    const existingPlan = await PlanModel.findById(planId);
+
+    if (!existingPlan) {
+      return res.status(404).json({ message: "Plan not found" });
+    }
+
+    // Find the vendor who offered the plan
+    const vendor = await VendorModel.findById(existingPlan.offeredBy);
+
+    if (vendor) {
+      // Remove the plan from the vendor's ListOfPlansOffered
+      vendor.ListOfPlansOffered = vendor.ListOfPlansOffered.filter(
+        (id) => id.toString() !== planId
+      );
+      await vendor.save();
+    }
+
+    // Delete the plan
+    await existingPlan.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: "Plan deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
