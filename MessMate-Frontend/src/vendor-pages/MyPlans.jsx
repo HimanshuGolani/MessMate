@@ -32,7 +32,7 @@ function MyPlans() {
             planType={item.planType}
             duration={item.duration}
             price={item.price}
-            planId={item.planId}
+            planId={item._id}
             key={index}
           />
         );

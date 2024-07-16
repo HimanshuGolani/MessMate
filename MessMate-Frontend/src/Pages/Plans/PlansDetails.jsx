@@ -10,11 +10,12 @@ import {
   Button,
   List,
   ListItem,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppState } from "../../Context/AppState";
-import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
 
 const themeColors = {
   primary: "#e67e22",
@@ -57,12 +58,14 @@ const PlanDetail = ({ label, value }) => (
 
 export default function PlansDetails() {
   const { state } = useLocation();
-  const { planName, description, menuImage, price } = state;
-  console.log(menuImage);
+  const { planName, description, duration, menuImage, price, planId } = state;
+  console.log(planId);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const { isAuth, role } = useAppState();
   const [showAllComments, setShowAllComments] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleAddComment = async () => {
     if (newComment.trim()) {
@@ -76,6 +79,12 @@ export default function PlansDetails() {
     //  console.log(response.data);
   };
 
+  const handleEdit = () => {
+    navigate(`/vender/editPlanForm`, {
+      state: { planName, description, duration, menuImage, price, planId },
+    });
+  };
+
   const topComments = showAllComments ? comments : comments.slice(0, 3);
 
   return (
@@ -83,11 +92,15 @@ export default function PlansDetails() {
       <StyledBox>
         <Card>
           <CardHeader
-            style={{
-              textAlign: "center",
-              fontSize: "2rem",
-            }}
-            title={`The plan name is : ${planName}`}
+            action={
+              role === "Vendor" && (
+                <Button onClick={handleEdit}>
+                  <EditIcon />
+                </Button>
+              )
+            }
+            title={planName}
+            titleTypographyProps={{ variant: "h5", color: themeColors.text }}
           />
           <CardMedia
             component="img"
@@ -95,77 +108,65 @@ export default function PlansDetails() {
             image={menuImage}
             alt="Menu"
           />
-          <CardContent
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "1.2rem",
-            }}
-          >
+          <CardContent>
             <PlanDetail label="Description" value={description} />
             <PlanDetail label="Price" value={`Rs: ${price}`} />
           </CardContent>
           {isAuth ? (
             <Box
               display="flex"
-              flexDirection={{ xs: "column", sm: "column" }}
-              justifyContent="center"
-              alignItems={"center"}
-              marginBottom={"2rem"}
+              flexDirection="column"
+              alignItems="center"
+              marginBottom="2rem"
             >
-              {role === "Vendor" ? (
-                <></>
-              ) : (
-                <>
-                  <Box mt={4}>
-                    <Typography
-                      variant="h6"
-                      component="h2"
-                      color={themeColors.text}
-                      style={{
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Purchase the plan
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={purchasePlan}
-                      sx={{ mt: 2 }}
-                    >
-                      Purchase
-                    </Button>
-                  </Box>
-                </>
+              {role !== "Vendor" && (
+                <Box mt={4} textAlign="center">
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    color={themeColors.text}
+                    fontWeight="bold"
+                  >
+                    Purchase the plan
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      mt: 2,
+                      backgroundColor: themeColors.primary,
+                      "&:hover": { backgroundColor: themeColors.highlight },
+                    }}
+                    onClick={purchasePlan}
+                  >
+                    Purchase
+                  </Button>
+                </Box>
               )}
-
               <Box mt={4} sx={{ width: "100%", maxWidth: "400px" }}>
                 <Typography
                   variant="h6"
                   component="h2"
                   color={themeColors.text}
-                  style={{
-                    fontWeight: "bold",
-                  }}
+                  fontWeight="bold"
                 >
                   Comments
                 </Typography>
                 <List>
                   {comments.length === 0 ? (
-                    <>No Comments till now.</>
+                    <Typography variant="body1" color={themeColors.text}>
+                      No Comments till now.
+                    </Typography>
                   ) : (
-                    <>
-                      {" "}
-                      {topComments.map((comment, index) => (
-                        <ListItem key={index} className="step-box">
+                    topComments.map((comment, index) => (
+                      <ListItem key={index}>
+                        <Box>
                           <Typography variant="h6">{`Comment ${
                             index + 1
                           }`}</Typography>
                           <Typography variant="body1">{comment}</Typography>
-                        </ListItem>
-                      ))}
-                    </>
+                        </Box>
+                      </ListItem>
+                    ))
                   )}
                 </List>
                 {comments.length > 3 && (
@@ -177,10 +178,7 @@ export default function PlansDetails() {
                     {showAllComments ? "Show Less" : "Show More"}
                   </Button>
                 )}
-
-                {role === "Vendor" ? (
-                  <></>
-                ) : (
+                {role !== "Vendor" && (
                   <>
                     <TextField
                       label="Add Comment"
@@ -192,9 +190,12 @@ export default function PlansDetails() {
                     />
                     <Button
                       variant="contained"
-                      color="primary"
+                      sx={{
+                        mt: 2,
+                        backgroundColor: themeColors.primary,
+                        "&:hover": { backgroundColor: themeColors.highlight },
+                      }}
                       onClick={handleAddComment}
-                      sx={{ mt: 2 }}
                     >
                       Submit
                     </Button>
@@ -203,7 +204,12 @@ export default function PlansDetails() {
               </Box>
             </Box>
           ) : (
-            <Typography variant="body1" color={themeColors.text} mt={4}>
+            <Typography
+              variant="body1"
+              color={themeColors.text}
+              mt={4}
+              textAlign="center"
+            >
               Please log in to purchase the plan and add comments.
             </Typography>
           )}

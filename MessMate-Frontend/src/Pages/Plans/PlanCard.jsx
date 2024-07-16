@@ -42,9 +42,13 @@ export default function PlanCard({
 
   const handleDetailsClick = () => {
     navigate(`/plansDetails/${planId}`, {
-      state: { planName, description, duration, menuImage, price },
+      state: { planName, description, duration, menuImage, price, planId },
     });
   };
+
+  console.log("====================================");
+  console.log("The planId is ", planId);
+  console.log("====================================");
 
   return (
     <StyledCard>

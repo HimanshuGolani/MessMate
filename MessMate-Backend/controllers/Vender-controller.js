@@ -237,7 +237,6 @@ export const getListOfCustomers = async (req, res) => {
       });
     }
     // retrieve the list of customers from the vendor
-
     const { ListOfCustomers } = vendor;
 
     if (ListOfCustomers.length === 0) {
@@ -284,11 +283,16 @@ export const getAllVendors = async (req, res) => {
 
 export const updatePlan = async (req, res) => {
   const { planId } = req.params;
-  const { planName, description, menuImage, planType, price, duration } = req.body;
+  const { planName, description, menuImage, planType, price, duration } =
+    req.body;
 
   try {
+    console.log("The data recieved is :", planId);
+
     // Find the existing plan by ID
     const existingPlan = await PlanModel.findById(planId);
+
+    console.log("The plans is : ", existingPlan);
 
     if (!existingPlan) {
       return res.status(404).json({ message: "Plan not found" });
@@ -312,6 +316,8 @@ export const updatePlan = async (req, res) => {
 
     // Save the updated plan
     await existingPlan.save();
+
+    console.log("The updated plan is : ", existingPlan);
 
     res.status(200).json({
       success: true,
