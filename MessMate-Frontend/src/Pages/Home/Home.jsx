@@ -79,10 +79,10 @@ const Home = () => {
         <section className="hero-section">
           <div className="hero">
             <div className="hero-text-box">
-              <h1 className="heading-primary">
+              <h1 className="animated heading-primary">
                 Delicious food, delivered fresh.
               </h1>
-              <p className="hero-description">
+              <p className="animated hero-description">
                 Welcome to our platform, where we connect you with local
                 home-cooks who prepare and deliver delicious home-cooked meals
                 at affordable prices. Our goal is to bring you fresh, healthy,

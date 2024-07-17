@@ -7,8 +7,15 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
-  const { BASE_URL, setUserId, setUserName, setIsAuth, setRole, setVendorId } =
-    useAppState();
+  const {
+    BASE_URL,
+    setUserId,
+    setUserName,
+    setIsAuth,
+    setRole,
+    setVendorId,
+    setCustomerId,
+  } = useAppState();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -51,6 +58,18 @@ function Login() {
         const { vendorId } = response.data;
         localStorage.setItem("vendorId", vendorId);
         setVendorId(vendorId);
+      }
+
+      console.log("====================================");
+      console.log("The user data is : ", response.data);
+      console.log("====================================");
+
+      const { role } = response.data;
+
+      if (role === "Customer") {
+        const { CustomerId } = response.data;
+        localStorage.setItem("customerId", CustomerId);
+        setCustomerId(CustomerId);
       }
 
       setRole(loginType);

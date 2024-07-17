@@ -195,3 +195,22 @@ body {
     font-size: 1.8rem;
   }
 }
+
+.animated {
+  text-decoration: none;
+  color: var(--text-color);
+  background: linear-gradient(
+    to right,
+    var(--text-color) 50%,
+    var(--highlight-color) 50%,
+    #cc2e5d
+  );
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: 0.5s ease-out;
+}
+
+.animated:hover {
+  background-position: -100%;
+}

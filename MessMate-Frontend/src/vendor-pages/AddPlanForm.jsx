@@ -20,7 +20,7 @@ import {
 import { styled } from "@mui/system";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase/firebase";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useAppState } from "../Context/AppState";
 import axios from "axios";
 
@@ -147,7 +147,15 @@ export default function AddPlanForm() {
         }
       );
       console.log(response.data);
-      toast.success("The plan is added.");
+      toast.success("The plan is added.", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        onClose: () => navigate("/vender/myPlans"),
+      });
     } catch (error) {
       toast.error("Error submitting the form.");
       console.error(error);
@@ -156,6 +164,7 @@ export default function AddPlanForm() {
 
   return (
     <Container>
+      <ToastContainer />
       <StyledCard>
         <CardHeader title="Plan Details" />
         <CardContent>

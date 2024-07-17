@@ -10,12 +10,18 @@ import {
   Button,
   List,
   ListItem,
-  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppState } from "../../Context/AppState";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
 
 const themeColors = {
   primary: "#e67e22",
@@ -45,6 +51,14 @@ const StyledBox = styled(Box)({
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
 });
 
+const StyledButton = styled(Button)({
+  marginTop: "1rem",
+  backgroundColor: themeColors.primary,
+  "&:hover": {
+    backgroundColor: themeColors.highlight,
+  },
+});
+
 const PlanDetail = ({ label, value }) => (
   <Box my={2}>
     <Typography variant="h6" component="h2" color={themeColors.text}>
@@ -56,18 +70,33 @@ const PlanDetail = ({ label, value }) => (
   </Box>
 );
 
+const CongratsAnimation = styled("div")({
+  fontSize: "2rem",
+  color: themeColors.primary,
+  textAlign: "center",
+  animation: "congrats 2s ease-out infinite",
+  "@keyframes congrats": {
+    "0%, 100%": {
+      transform: "scale(1)",
+    },
+    "50%": {
+      transform: "scale(1.2)",
+    },
+  },
+});
+
 export default function PlansDetails() {
   const { state } = useLocation();
-  const { planName, description, duration, menuImage, price, planId } = state;
-  console.log(planId);
+  const { planName, description, menuImage, price, planId } = state;
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const { isAuth, role } = useAppState();
+  const { isAuth, role, BASE_URL, customerId } = useAppState();
   const [showAllComments, setShowAllComments] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleAddComment = async () => {
+  const handleAddComment = () => {
     if (newComment.trim()) {
       setComments((prevComments) => [...prevComments, newComment]);
       setNewComment("");
@@ -75,13 +104,23 @@ export default function PlansDetails() {
   };
 
   const purchasePlan = async () => {
-    // const response = await axios
-    //  console.log(response.data);
+    const response = await axios.post(`${BASE_URL}/user/purchasePlan`, {
+      planId,
+      customerId: customerId,
+    });
+    console.log(response.data);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    // after the purchase of plan the custoemr is redirected to home.
+    navigate("/");
   };
 
   const handleEdit = () => {
-    navigate(`/vender/editPlanForm`, {
-      state: { planName, description, duration, menuImage, price, planId },
+    navigate(`/vendor/editPlanForm`, {
+      state: { planName, description, menuImage, price, planId },
     });
   };
 
@@ -117,7 +156,7 @@ export default function PlansDetails() {
               display="flex"
               flexDirection="column"
               alignItems="center"
-              marginBottom="2rem"
+              mb={4}
             >
               {role !== "Vendor" && (
                 <Box mt={4} textAlign="center">
@@ -129,17 +168,9 @@ export default function PlansDetails() {
                   >
                     Purchase the plan
                   </Typography>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      mt: 2,
-                      backgroundColor: themeColors.primary,
-                      "&:hover": { backgroundColor: themeColors.highlight },
-                    }}
-                    onClick={purchasePlan}
-                  >
-                    Purchase
-                  </Button>
+                  <StyledButton variant="contained" onClick={purchasePlan}>
+                    Purchase Plan
+                  </StyledButton>
                 </Box>
               )}
               <Box mt={4} sx={{ width: "100%", maxWidth: "400px" }}>
@@ -154,7 +185,7 @@ export default function PlansDetails() {
                 <List>
                   {comments.length === 0 ? (
                     <Typography variant="body1" color={themeColors.text}>
-                      No Comments till now.
+                      No comments yet.
                     </Typography>
                   ) : (
                     topComments.map((comment, index) => (
@@ -188,17 +219,12 @@ export default function PlansDetails() {
                       onChange={(e) => setNewComment(e.target.value)}
                       sx={{ mt: 2 }}
                     />
-                    <Button
+                    <StyledButton
                       variant="contained"
-                      sx={{
-                        mt: 2,
-                        backgroundColor: themeColors.primary,
-                        "&:hover": { backgroundColor: themeColors.highlight },
-                      }}
                       onClick={handleAddComment}
                     >
                       Submit
-                    </Button>
+                    </StyledButton>
                   </>
                 )}
               </Box>
@@ -215,6 +241,45 @@ export default function PlansDetails() {
           )}
         </Card>
       </StyledBox>
+
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          Purchase Confirmation
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseModal}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <CongratsAnimation>Congratulations!</CongratsAnimation>
+          <Typography
+            variant="h6"
+            color={themeColors.text}
+            align="center"
+            mt={2}
+          >
+            You have successfully purchased the plan.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

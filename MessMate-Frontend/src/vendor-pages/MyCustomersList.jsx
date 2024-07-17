@@ -15,9 +15,16 @@ export default function MyCustomersList() {
   const { BASE_URL, vendorId } = useAppState();
   const [customerList, setCustomerList] = useState([]);
 
+  console.log("====================================");
+  console.log(vendorId);
+  console.log("====================================");
+
   const getListOfCustomers = async () => {
+    console.log("====================================");
+    console.log("triggered the request", vendorId);
+    console.log("====================================");
     const response = await axios.get(
-      `${BASE_URL}/vendor/getListOfCustomers/${vendorId}`
+      `${BASE_URL}/vender/getListOfCustomers/${vendorId}`
     );
     const { ListOfCustomers } = response.data;
     console.log(response.data);

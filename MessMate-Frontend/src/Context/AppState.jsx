@@ -20,9 +20,17 @@ const AppFieldsProvider = ({ children }) => {
       : localStorage.getItem("vendorId")
   );
 
+  const [customerId, setCustomerId] = useState(
+    localStorage.getItem("customerId") === undefined
+      ? ""
+      : localStorage.getItem("customerId")
+  );
+
   return (
     <AppContext.Provider
       value={{
+        customerId,
+        setCustomerId,
         vendorId,
         setVendorId,
         role,

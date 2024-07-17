@@ -121,7 +121,7 @@ const NavBar = () => {
               display: { xs: "none", md: "inline-block" },
             }}
           >
-            Your Plan
+            Ongoing Plan
           </Button>
           <Button
             color="inherit"
@@ -264,7 +264,7 @@ const NavBar = () => {
             All Vendors
           </MenuItem>
           <MenuItem component={Link} to="/your-plan" onClick={handleMenuClose}>
-            Your Plan
+            Ongoing Plan
           </MenuItem>
           <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
             Profile

@@ -46,10 +46,15 @@ export const userLogin = async (req, res) => {
       });
     }
 
+    const id = existingUser._id;
+
+    const customer = await CustomerModel.findOne({ userID: id });
+
     const isPasswordValid = await bcrypt.compare(
       password,
       existingUser.password
     );
+
     if (!isPasswordValid) {
       return res.status(401).send({
         message: "The credentials are incorrect.",
@@ -57,10 +62,14 @@ export const userLogin = async (req, res) => {
       });
     }
 
+    const { _id } = customer;
+
     return res.status(200).send({
       message: "Login successful.",
       success: true,
       user: existingUser,
+      CustomerId: _id,
+      role: "Customer",
     });
   } catch (error) {
     console.log(error);
@@ -135,6 +144,8 @@ export const purchasePlan = async (req, res) => {
   try {
     const { planId, customerId } = req.body;
 
+    console.log("The body recieved is : ", planId, customerId);
+
     if (!planId || !customerId) {
       return res.status(400).send({
         message: "Plan ID or Customer ID is missing.",
@@ -144,6 +155,8 @@ export const purchasePlan = async (req, res) => {
 
     const user = await CustomerModel.findById(customerId);
     const chosenPlan = await plansModel.findById(planId);
+
+    console.log("The customer found is : ", user);
 
     if (!user || !chosenPlan) {
       return res.status(404).send({
@@ -174,6 +187,8 @@ export const purchasePlan = async (req, res) => {
     vendor.ListOfCustomers.push(customerId);
     await user.save();
     await vendor.save();
+
+    console.log(user, vendor);
 
     return res.status(200).send({
       message: "The plan is added successfully.",
