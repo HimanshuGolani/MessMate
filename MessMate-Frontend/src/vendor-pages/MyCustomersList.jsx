@@ -2,32 +2,32 @@ import React, { useEffect, useState } from "react";
 import { useAppState } from "../Context/AppState";
 import axios from "axios";
 import {
-  Button,
   Card,
-  CardActions,
   CardContent,
   Typography,
   Box,
   Container,
+  Grid,
 } from "@mui/material";
+
+const themeColors = {
+  primary: "#e67e22",
+  secondary: "#fae5d3",
+  text: "#333",
+  background: "#fff",
+  boxBackground: "#fafafa",
+};
 
 export default function MyCustomersList() {
   const { BASE_URL, vendorId } = useAppState();
   const [customerList, setCustomerList] = useState([]);
 
-  console.log("====================================");
-  console.log(vendorId);
-  console.log("====================================");
-
   const getListOfCustomers = async () => {
-    console.log("====================================");
-    console.log("triggered the request", vendorId);
-    console.log("====================================");
     const response = await axios.get(
       `${BASE_URL}/vender/getListOfCustomers/${vendorId}`
     );
     const { ListOfCustomers } = response.data;
-    console.log(response.data);
+
     setCustomerList(ListOfCustomers);
   };
 
@@ -37,50 +37,51 @@ export default function MyCustomersList() {
 
   return (
     <Box
-      sx={{ backgroundColor: "#fae5d3", minHeight: "100vh", padding: "2rem" }}
+      sx={{
+        backgroundColor: themeColors.secondary,
+        minHeight: "100vh",
+        padding: "2rem",
+      }}
     >
       <Container>
         {customerList && customerList.length > 0 ? (
-          customerList.map((item, index) => (
-            <Card
-              key={index}
-              sx={{
-                maxWidth: 600,
-                margin: "2rem auto",
-                backgroundColor: "#fff",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              }}
-              variant="outlined"
-            >
-              <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  {`Customer Name: ${item.fullName}`}
-                </Typography>
-                <Typography variant="body1" color="text.primary">
-                  {`Address: ${item.address.location}, City: ${item.address.city}`}
-                </Typography>
-                <Typography variant="body1">{`Plan: ${item.plan}`}</Typography>
-              </CardContent>
-              <CardActions>
-                <Button
+          <Grid container spacing={4}>
+            {customerList.map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card
                   sx={{
-                    color: "#fff",
-                    backgroundColor: "#cf711f",
-                    fontSize: "1rem",
-                    fontWeight: "600",
-                    padding: "0.8rem 1.6rem",
+                    backgroundColor: themeColors.background,
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                    padding: "1rem",
                     borderRadius: "8px",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "#b85e1b",
-                    },
                   }}
+                  variant="outlined"
                 >
-                  Click me
-                </Button>
-              </CardActions>
-            </Card>
-          ))
+                  <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                      {`${index + 1}. ${item.fullName}`}
+                    </Typography>
+                    <Typography variant="h6" color={themeColors.text}>
+                      {`Address: ${item.address}`}
+                    </Typography>
+                    {/* <Typography variant="body1" color={themeColors.text} mt={2}>
+                      {`Plan: ${"Plan name"}`}
+                    </Typography> */}
+                    <Typography variant="body1" color={themeColors.text} mt={1}>
+                      {`Start Date: ${new Date(
+                        item.Current_Plan.startingDate
+                      ).toLocaleDateString()}`}
+                    </Typography>
+                    <Typography variant="body1" color={themeColors.text} mt={1}>
+                      {`End Date: ${new Date(
+                        item.Current_Plan.validTill
+                      ).toLocaleDateString()}`}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
         ) : (
           <Box
             sx={{
@@ -90,7 +91,7 @@ export default function MyCustomersList() {
               height: "50vh",
             }}
           >
-            <Typography variant="h4" color="text.primary">
+            <Typography variant="h4" color={themeColors.text}>
               No Customers have purchased any plans yet.
             </Typography>
           </Box>

@@ -225,13 +225,10 @@ export const getListOfCustomers = async (req, res) => {
     const { vendorId } = req.params;
 
     // serch for the vendor
-    const vendor = await VendorModel.findById(vendorId)
-      .populate(
-        "ListOfCustomers",
-        "fullName address phoneNumber Current_Plan startingDate validTill"
-      )
-      .populate("ListOfCustomers.Current_Plan", "price");
-
+    const vendor = await VendorModel.findById(vendorId).populate(
+      "ListOfCustomers",
+      "fullName address phoneNumber Current_Plan  startingDate validTill"
+    );
     // check if the vendor exists or not.
     if (!vendor) {
       return res.status(404).send({
@@ -247,6 +244,11 @@ export const getListOfCustomers = async (req, res) => {
         ListOfCustomers,
       });
     }
+
+    console.log("====================================");
+    console.log(ListOfCustomers);
+    console.log("====================================");
+
     return res.status(200).send({
       ListOfCustomers,
     });
