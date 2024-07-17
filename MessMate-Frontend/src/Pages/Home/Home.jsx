@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
 import HeroImage from "../../assets/img/hero.png";
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
+import axios from "axios";
+import { useAppState } from "../../Context/AppState";
 
 const Home = () => {
+  const [userCount, setUserCount] = useState(0);
+
+  const { BASE_URL } = useAppState();
+
+  const getCustomerCount = async () => {
+    const response = await axios.get(`${BASE_URL}/user/getCustomerCount`);
+
+    setUserCount(response.data.noOfUsers);
+  };
+
+  useEffect(() => {
+    getCustomerCount();
+  }, []);
+
   const services = [
     {
       title: "Home-Cooked Meals",
@@ -100,14 +116,14 @@ const Home = () => {
                 </em>
               </p>
               <Link
-                to="#"
+                to="/AllVendors"
                 className="btn btn--full margin-right-sm"
                 aria-label="Start eating homely"
               >
                 Start eating homely
               </Link>
-              <Link to="#" className="btn btn--outline" aria-label="Learn more">
-                Learn more &darr;
+              <Link className="btn btn--outline" aria-label="Learn more ">
+                {`With the ${userCount} customers, All around.`}
               </Link>
             </div>
             <div className="hero-image-box">
