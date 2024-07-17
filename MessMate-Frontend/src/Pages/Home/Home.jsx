@@ -2,6 +2,7 @@ import React from "react";
 import "./Home.css";
 import HeroImage from "../../assets/img/hero.png";
 import { Link } from "react-router-dom";
+import Footer from "./Footer";
 
 const Home = () => {
   const services = [
@@ -155,6 +156,7 @@ const Home = () => {
           </div>
         </section>
       </div>
+      <Footer />
     </main>
   );
 };
