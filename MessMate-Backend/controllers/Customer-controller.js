@@ -207,6 +207,7 @@ export const purchasePlan = async (req, res) => {
 export const getCurrentPlan = async (req, res) => {
   try {
     const { userId } = req.params;
+    console.profileEnd(userId);
 
     if (!userId) {
       return res.status(400).send({
@@ -215,9 +216,10 @@ export const getCurrentPlan = async (req, res) => {
       });
     }
 
-    const currentUser = await CustomerModel.find({ userID: userId }).populate(
+    const currentUser = await CustomerModel.findById(userId).populate(
       "Current_Plan.plan"
     );
+    console.log(currentUser);
 
     if (!currentUser) {
       return res.status(404).send({
@@ -226,7 +228,7 @@ export const getCurrentPlan = async (req, res) => {
       });
     }
 
-    const currentPlan = currentUser[0].Current_Plan.plan;
+    const currentPlan = currentUser.Current_Plan.plan;
 
     return res.status(200).send({
       success: true,
