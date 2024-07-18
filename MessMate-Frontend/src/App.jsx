@@ -12,6 +12,7 @@ import AddPlanForm from "./vendor-pages/AddPlanForm";
 import MyPlans from "./vendor-pages/MyPlans";
 import MyCustomersList from "./vendor-pages/MyCustomersList";
 import EditPlanForm from "./vendor-pages/EditPlanForm";
+import OngoingPlan from "./Pages/Plans/OngoingPlan";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/plansOffered" element={<PlanContainer />} />
           <Route path="/plan" element={<PlanCard />} />
           <Route path="/plansDetails/:id" element={<PlansDetails />} />
+          <Route path="/OngoingPlan" element={<OngoingPlan />} />
           <Route path="/vender/addPlan" element={<AddPlanForm />} />
           <Route path="/vender/myPlans" element={<MyPlans />} />
           <Route path="/vender/myCustomersList" element={<MyCustomersList />} />

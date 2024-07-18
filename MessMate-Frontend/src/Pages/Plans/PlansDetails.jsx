@@ -209,35 +209,10 @@ export default function PlansDetails() {
                     {showAllComments ? "Show Less" : "Show More"}
                   </Button>
                 )}
-                {role !== "Vendor" && (
-                  <>
-                    <TextField
-                      label="Add Comment"
-                      variant="outlined"
-                      fullWidth
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      sx={{ mt: 2 }}
-                    />
-                    <StyledButton
-                      variant="contained"
-                      onClick={handleAddComment}
-                    >
-                      Submit
-                    </StyledButton>
-                  </>
-                )}
               </Box>
             </Box>
           ) : (
-            <Typography
-              variant="body1"
-              color={themeColors.text}
-              mt={4}
-              textAlign="center"
-            >
-              Please log in to purchase the plan and add comments.
-            </Typography>
+            <></>
           )}
         </Card>
       </StyledBox>

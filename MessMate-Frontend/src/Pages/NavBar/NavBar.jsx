@@ -131,7 +131,7 @@ const NavBar = () => {
           <Button
             color="inherit"
             component={Link}
-            to="/your-plan"
+            to="/OngoingPlan"
             sx={{
               fontSize: "1.4rem",
               display: { xs: "none", md: "inline-block" },
@@ -279,7 +279,11 @@ const NavBar = () => {
           <MenuItem component={Link} to="/AllVendors" onClick={handleMenuClose}>
             All Vendors
           </MenuItem>
-          <MenuItem component={Link} to="/your-plan" onClick={handleMenuClose}>
+          <MenuItem
+            component={Link}
+            to="/OngoingPlan"
+            onClick={handleMenuClose}
+          >
             Ongoing Plan
           </MenuItem>
           <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
