@@ -9,10 +9,11 @@ import { storage } from "../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 export default function Signup() {
-  const { BASE_URL, setUserId, setUserName, setIsAuth } = useAppState();
+  const { BASE_URL, setUserId, setUserName, setIsAuth, setRole } =
+    useAppState();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const [role, setRole] = useState("");
+  const [role, setRoleS] = useState("");
   const [customerForm, setCustomerForm] = useState({
     name: "",
     email: "",
@@ -124,6 +125,8 @@ export default function Signup() {
         const { userID, fullName } = response.data.Customer;
         setUserId(userID);
         setUserName(fullName);
+        localStorage.setItem("role", response.data.role);
+        setRole(role);
         setIsAuth(true);
         navigate("/");
       } else if (role === "Vendor") {
@@ -141,7 +144,9 @@ export default function Signup() {
         const { userID, businessName } = response.data.Vendor;
         setUserId(userID);
         setUserName(businessName);
+        localStorage.setItem("role", response.data.role);
         setIsAuth(true);
+        setRole(role);
         navigate("/");
       }
     } catch (error) {
@@ -166,7 +171,7 @@ export default function Signup() {
                 id="role"
                 name="role"
                 value={role}
-                onChange={(e) => setRole(e.target.value)}
+                onChange={(e) => setRoleS(e.target.value)}
               >
                 <option>Select a role</option>
                 <option value="Customer">Customer</option>

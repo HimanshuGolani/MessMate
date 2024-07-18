@@ -12,7 +12,16 @@ import { useAppState } from "../../Context/AppState";
 import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
-  const { isAuth, setIsAuth, role } = useAppState();
+  const {
+    isAuth,
+    setIsAuth,
+    role,
+    setUserId,
+    setUserName,
+    setRole,
+    setVendorId,
+    setCustomerId,
+  } = useAppState();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const navigate = useNavigate();
@@ -22,6 +31,13 @@ const NavBar = () => {
   const handleLogout = () => {
     setIsAuth(false);
     localStorage.removeItem("auth");
+    localStorage.removeItem("role");
+    localStorage.removeItem("customerId");
+    setUserId("");
+    setUserName("");
+    setRole("");
+    setVendorId("");
+    setCustomerId("");
     handleMenuClose();
     navigate("/");
   };

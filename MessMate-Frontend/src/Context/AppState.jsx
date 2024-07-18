@@ -13,7 +13,7 @@ const AppFieldsProvider = ({ children }) => {
 
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
-  const [role, setRole] = useState(localStorage.getItem("role"));
+  const [role, setRole] = useState();
   const [vendorId, setVendorId] = useState(
     localStorage.getItem("vendorId") === undefined
       ? ""

@@ -40,6 +40,7 @@ export const vendorLogin = async (req, res) => {
       success: true,
       user: existingUser,
       vendorId: user._id,
+      role: "Vendor",
     });
   } catch (error) {
     console.log(error);
@@ -113,6 +114,7 @@ export const vendorRegister = async (req, res) => {
     res.status(201).send({
       message: "Vendor registered successfully",
       Vendor: newVendor,
+      role: "Vendor",
     });
   } catch (error) {
     console.log(error);
