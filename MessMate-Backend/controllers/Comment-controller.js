@@ -19,7 +19,7 @@ export const addComment = async (req, res) => {
       $push: { comments: newComment._id },
     });
 
-    const updatedPlan = await Plan.findById(planId).populate('comments');
+    const updatedPlan = await Plan.findById(planId).populate("comments");
 
     res.status(201).json(updatedPlan);
   } catch (error) {
@@ -28,22 +28,26 @@ export const addComment = async (req, res) => {
   }
 };
 
-
-
 // Get all comments for a plan
 export const getComments = async (req, res) => {
   try {
     const { planId } = req.params;
 
+    console.log("====================================");
+    console.log(planId);
+    console.log("====================================");
+
     const findPlan = await Plan.findById(planId).populate("comments");
 
     if (!findPlan) {
-      return res
-        .status(404)
-        .send({ message: "No plan found" });
+      return res.status(404).send({ message: "No plan found" });
     }
 
     const { comments } = findPlan;
+
+    console.log("====================================");
+    console.log(comments);
+    console.log("====================================");
 
     res.status(200).send({ comments });
   } catch (error) {

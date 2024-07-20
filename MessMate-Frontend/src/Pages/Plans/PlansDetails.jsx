@@ -6,8 +6,6 @@ import {
   CardContent,
   Typography,
   Box,
-  TextField,
-  Button,
   List,
   ListItem,
   Dialog,
@@ -15,6 +13,7 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -85,23 +84,30 @@ const CongratsAnimation = styled("div")({
   },
 });
 
+const CommentCard = styled(Card)({
+  marginBottom: "10px",
+  padding: "10px",
+  backgroundColor: themeColors.boxBackground,
+});
+
+const CommentHeader = styled(CardHeader)({
+  paddingBottom: "0px",
+});
+
+const CommentDate = styled(Typography)({
+  fontSize: "0.875rem",
+  color: themeColors.text,
+});
+
 export default function PlansDetails() {
   const { state } = useLocation();
   const { planName, description, menuImage, price, planId } = state;
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
   const { isAuth, role, BASE_URL, customerId } = useAppState();
   const [showAllComments, setShowAllComments] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const navigate = useNavigate();
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      setComments((prevComments) => [...prevComments, newComment]);
-      setNewComment("");
-    }
-  };
 
   const purchasePlan = async () => {
     const response = await axios.post(`${BASE_URL}/user/purchasePlan`, {
@@ -114,7 +120,6 @@ export default function PlansDetails() {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    // after the purchase of plan the custoemr is redirected to home.
     navigate("/");
   };
 
@@ -123,6 +128,22 @@ export default function PlansDetails() {
       state: { planName, description, menuImage, price, planId },
     });
   };
+
+  const getComments = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/comment/allComments/${planId}`
+      );
+      const { comments } = response.data;
+      setComments(comments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    getComments();
+  }, [planId]);
 
   const topComments = showAllComments ? comments : comments.slice(0, 3);
 
@@ -141,12 +162,14 @@ export default function PlansDetails() {
             title={planName}
             titleTypographyProps={{ variant: "h5", color: themeColors.text }}
           />
-          <CardMedia
-            component="img"
-            height="300"
-            image={menuImage}
-            alt="Menu"
-          />
+          <a href={menuImage} target="_blank" rel="noopener noreferrer">
+            <CardMedia
+              component="img"
+              height="300"
+              image={menuImage}
+              alt="Menu"
+            />
+          </a>
           <CardContent>
             <PlanDetail label="Description" value={description} />
             <PlanDetail label="Price" value={`Rs: ${price}`} />
@@ -190,12 +213,23 @@ export default function PlansDetails() {
                   ) : (
                     topComments.map((comment, index) => (
                       <ListItem key={index}>
-                        <Box>
-                          <Typography variant="h6">{`Comment ${
-                            index + 1
-                          }`}</Typography>
-                          <Typography variant="body1">{comment}</Typography>
-                        </Box>
+                        <CommentCard>
+                          <CommentHeader title={`Comment ${index + 1}`} />
+                          <CardContent>
+                            <Typography variant="body1">
+                              {comment.comment}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color={themeColors.text}
+                            >
+                              Rating: {comment.rating}
+                            </Typography>
+                            <CommentDate>
+                              {new Date(comment.date).toLocaleDateString()}
+                            </CommentDate>
+                          </CardContent>
+                        </CommentCard>
                       </ListItem>
                     ))
                   )}

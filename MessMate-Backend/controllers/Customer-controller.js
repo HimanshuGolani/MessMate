@@ -10,7 +10,6 @@ import "dotenv/config";
 export const displayCustomersCount = async (req, res) => {
   try {
     const numberOfUsers = await UserModel.countDocuments();
-    const user = await UserModel.find();
 
     return res.status(200).send({
       noOfUsers: numberOfUsers,
@@ -223,10 +222,6 @@ export const getCurrentPlan = async (req, res) => {
     console.log(currentUser);
 
     const { offeredBy } = currentUser.Current_Plan.plan;
-
-    console.log("====================================");
-    console.log(offeredBy);
-    console.log("====================================");
 
     const vendorDetails = await VendorModel.findById(offeredBy);
 

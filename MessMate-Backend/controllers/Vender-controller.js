@@ -247,10 +247,6 @@ export const getListOfCustomers = async (req, res) => {
       });
     }
 
-    console.log("====================================");
-    console.log(ListOfCustomers);
-    console.log("====================================");
-
     return res.status(200).send({
       ListOfCustomers,
     });
