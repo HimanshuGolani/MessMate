@@ -7,24 +7,31 @@ const AppFieldsProvider = ({ children }) => {
 
   const [isAuth, setIsAuth] = useState(localStorage.getItem("auth") === "true");
 
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
+  const [role, setRole] = useState(localStorage.getItem("role") || "");
+  const [vendorId, setVendorId] = useState(
+    localStorage.getItem("vendorId") || ""
+  );
+  const [customerId, setCustomerId] = useState(
+    localStorage.getItem("customerId") || ""
+  );
+
   useEffect(() => {
     localStorage.setItem("auth", isAuth);
   }, [isAuth]);
 
-  const [userId, setUserId] = useState("");
-  const [userName, setUserName] = useState("");
-  const [role, setRole] = useState();
-  const [vendorId, setVendorId] = useState(
-    localStorage.getItem("vendorId") === undefined
-      ? ""
-      : localStorage.getItem("vendorId")
-  );
+  useEffect(() => {
+    localStorage.setItem("role", role);
+  }, [role]);
 
-  const [customerId, setCustomerId] = useState(
-    localStorage.getItem("customerId") === undefined
-      ? ""
-      : localStorage.getItem("customerId")
-  );
+  useEffect(() => {
+    localStorage.setItem("vendorId", vendorId);
+  }, [vendorId]);
+
+  useEffect(() => {
+    localStorage.setItem("customerId", customerId);
+  }, [customerId]);
 
   return (
     <AppContext.Provider

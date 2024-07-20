@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -32,6 +32,7 @@ const NavBar = () => {
     setIsAuth(false);
     localStorage.removeItem("auth");
     localStorage.removeItem("role");
+    localStorage.removeItem("vendorId");
     localStorage.removeItem("customerId");
     setUserId("");
     setUserName("");

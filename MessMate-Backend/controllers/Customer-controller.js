@@ -219,7 +219,16 @@ export const getCurrentPlan = async (req, res) => {
     const currentUser = await CustomerModel.findById(userId).populate(
       "Current_Plan.plan"
     );
+
     console.log(currentUser);
+
+    const { offeredBy } = currentUser.Current_Plan.plan;
+
+    console.log("====================================");
+    console.log(offeredBy);
+    console.log("====================================");
+
+    const vendorDetails = await VendorModel.findById(offeredBy);
 
     if (!currentUser) {
       return res.status(404).send({
@@ -233,6 +242,7 @@ export const getCurrentPlan = async (req, res) => {
     return res.status(200).send({
       success: true,
       currentPlan: currentPlan,
+      vendorName: vendorDetails.businessName,
     });
   } catch (error) {
     console.error(error);
