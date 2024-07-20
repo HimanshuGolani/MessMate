@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import NavBar from "./Pages/NavBar/NavBar";
 import Login from "./Pages/Login-signup/Login";
-import { useAppState } from "./Context/AppState";
 import Signup from "./Pages/Login-signup/Signup";
 import AllVenders from "./Pages/Venders/AllVenders";
 import PlanContainer from "./Pages/Plans/PlanContainer";
@@ -13,6 +12,7 @@ import MyPlans from "./vendor-pages/MyPlans";
 import MyCustomersList from "./vendor-pages/MyCustomersList";
 import EditPlanForm from "./vendor-pages/EditPlanForm";
 import OngoingPlan from "./Pages/Plans/OngoingPlan";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/AllVendors" element={<AllVenders />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/plansOffered" element={<PlanContainer />} />
           <Route path="/plan" element={<PlanCard />} />
           <Route path="/plansDetails/:id" element={<PlansDetails />} />
