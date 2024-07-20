@@ -4,12 +4,11 @@ import Comment from "../models/Comments-model.js";
 // Add a new comment to a plan
 export const addComment = async (req, res) => {
   const { planId } = req.params;
-  const { customerId, vendorId, comment, rating } = req.body;
+  const { customerId, comment, rating } = req.body;
 
   try {
     const newComment = await Comment.create({
       customerId,
-      vendorId,
       planId,
       comment,
       rating,
@@ -33,10 +32,6 @@ export const getComments = async (req, res) => {
   try {
     const { planId } = req.params;
 
-    console.log("====================================");
-    console.log(planId);
-    console.log("====================================");
-
     const findPlan = await Plan.findById(planId).populate("comments");
 
     if (!findPlan) {
@@ -44,10 +39,6 @@ export const getComments = async (req, res) => {
     }
 
     const { comments } = findPlan;
-
-    console.log("====================================");
-    console.log(comments);
-    console.log("====================================");
 
     res.status(200).send({ comments });
   } catch (error) {

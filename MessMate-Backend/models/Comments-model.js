@@ -6,11 +6,6 @@ const commentSchema = new mongoose.Schema({
     ref: "Customer",
     required: true,
   },
-  vendorId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Vendor",
-    required: true,
-  },
   planId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Plan",

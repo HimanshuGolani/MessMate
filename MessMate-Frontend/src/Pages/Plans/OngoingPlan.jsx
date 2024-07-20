@@ -10,6 +10,7 @@ import {
   Button,
   List,
   ListItem,
+  Rating,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import axios from "axios";
@@ -58,7 +59,6 @@ const DataRow = styled(Box)({
 const CommentsSection = styled(Box)({
   marginTop: "20px",
   padding: "10px",
-  // backgroundColor: themeColors.secondary,
   borderRadius: "8px",
 });
 
@@ -94,6 +94,7 @@ const OngoingPlan = () => {
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [newRating, setNewRating] = useState(0);
   const [showAllComments, setShowAllComments] = useState(false);
   const [planId, setPlanId] = useState("");
 
@@ -136,19 +137,29 @@ const OngoingPlan = () => {
     getCurrentPlan();
   }, [userId]);
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
+      const response = await axios.post(
+        `${BASE_URL}/comment/addComment/${planId}`,
+        {
+          customerId: customerId,
+          planId: planId,
+          comment: newComment,
+          rating: newRating,
+        }
+      );
+      console.log(response.data);
       setComments((prevComments) => [
         ...prevComments,
         {
           comment: newComment,
           customerId: userId,
           date: new Date().toISOString(),
-          rating: 5, // Example rating, adjust as needed
+          rating: newRating,
         },
       ]);
       setNewComment("");
-      // You might want to send the new comment to the server here
+      setNewRating(0);
     }
   };
 
@@ -271,6 +282,15 @@ const OngoingPlan = () => {
               variant="outlined"
               sx={{ mb: 2 }}
             />
+            <Box display="flex" alignItems="center" mb={2}>
+              <Typography component="legend" color={themeColors.text}>
+                Rating:
+              </Typography>
+              <Rating
+                value={newRating}
+                onChange={(e, newValue) => setNewRating(newValue)}
+              />
+            </Box>
             <StyledButton variant="contained" onClick={handleAddComment}>
               Add Comment
             </StyledButton>
