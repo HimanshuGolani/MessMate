@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { storage } from "../../firebase/firebase";
+import { storage } from "../../Firebase/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 export default function Signup() {

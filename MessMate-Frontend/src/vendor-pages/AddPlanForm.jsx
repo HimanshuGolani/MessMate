@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase/firebase";
+import { storage } from "../Firebase/firebase.js";
 import { toast, ToastContainer } from "react-toastify";
 import { useAppState } from "../Context/AppState";
 import axios from "axios";

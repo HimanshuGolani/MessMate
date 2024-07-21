@@ -3,13 +3,13 @@ import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBfMYK-F0t9Ae3Zwlq-XcUwtxoLOxeziVw",
-  authDomain: "messmate-images.firebaseapp.com",
-  projectId: "messmate-images",
-  storageBucket: "messmate-images.appspot.com",
-  messagingSenderId: "1034295181577",
-  appId: "1:1034295181577:web:315e6b172afbe90e9053d8",
-  measurementId: "G-3N7CXHX769",
+  apiKey: "AIzaSyD2UwOst2owt_YGvbG8jL2-7zIAqh6PC04",
+  authDomain: "mess-mate-images.firebaseapp.com",
+  projectId: "mess-mate-images",
+  storageBucket: "mess-mate-images.appspot.com",
+  messagingSenderId: "934387892874",
+  appId: "1:934387892874:web:61d9656791172406d0e373",
+  measurementId: "G-PR3Z9V2YHS",
 };
 
 // Initialize Firebase

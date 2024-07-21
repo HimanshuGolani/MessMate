@@ -20,7 +20,7 @@ const Profile = () => {
   const [planStartDate, setPlanStartDate] = useState("2024-07-01");
   const [planEndDate, setPlanEndDate] = useState("2024-07-31");
 
-  const fetchCompletedTodos = async (date) => {
+  const fetchTodaysStatus = async (date) => {
     try {
       const response = await axios.get(
         `http://localhost:3000/todos/completed/${date}`
@@ -36,7 +36,7 @@ const Profile = () => {
     if (
       moment(selectedDate).isBetween(planStartDate, planEndDate, null, "[]")
     ) {
-      fetchCompletedTodos(selectedDate);
+      fetchTodaysStatus(selectedDate);
     }
   }, [selectedDate, planStartDate, planEndDate]);
 

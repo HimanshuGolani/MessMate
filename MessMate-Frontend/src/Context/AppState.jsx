@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 const AppContext = createContext();
 
 const AppFieldsProvider = ({ children }) => {
-  const BASE_URL = "http://localhost:8080/api/v1";
+  const BASE_URL = "https://mess-mate-backend.onrender.com/api/v1";
 
   const [isAuth, setIsAuth] = useState(localStorage.getItem("auth") === "true");
 
