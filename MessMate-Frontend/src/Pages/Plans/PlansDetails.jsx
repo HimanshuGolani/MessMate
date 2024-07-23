@@ -124,7 +124,7 @@ export default function PlansDetails() {
   };
 
   const handleEdit = () => {
-    navigate(`/vendor/editPlanForm`, {
+    navigate(`/vender/editPlanForm`, {
       state: { planName, description, menuImage, price, planId },
     });
   };
