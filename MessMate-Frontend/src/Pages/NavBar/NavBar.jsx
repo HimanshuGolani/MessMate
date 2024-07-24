@@ -143,7 +143,7 @@ const NavBar = () => {
           <Button
             color="inherit"
             component={Link}
-            to="/profile"
+            to={role === "Vendor" ? "/vender/vendorProfile" : "/profile"}
             sx={{
               fontSize: "1.4rem",
               display: { xs: "none", md: "inline-block" },
@@ -226,7 +226,7 @@ const NavBar = () => {
           <Button
             color="inherit"
             component={Link}
-            to="/profile"
+            to={role === "Vendor" ? "/vender/vendorProfile" : "/profile"}
             sx={{
               fontSize: "1.4rem",
               display: { xs: "none", md: "inline-block" },
@@ -329,7 +329,11 @@ const NavBar = () => {
           >
             Customer's List
           </MenuItem>
-          <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
+          <MenuItem
+            component={Link}
+            to={role === "Vendor" ? "/vender/vendorProfile" : "/profile"}
+            onClick={handleMenuClose}
+          >
             Profile
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>

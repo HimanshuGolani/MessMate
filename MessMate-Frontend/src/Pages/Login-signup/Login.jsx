@@ -60,10 +60,6 @@ function Login() {
         setVendorId(vendorId);
       }
 
-      console.log("====================================");
-      console.log("The user data is : ", response.data);
-      console.log("====================================");
-
       const { role } = response.data;
 
       if (role === "Customer") {
