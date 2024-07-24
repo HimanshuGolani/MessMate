@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import "./VendorProfile.css";
@@ -15,14 +15,28 @@ const VendorProfile = () => {
     noOfCustomers: "",
     Gst_No: "",
   });
+
   const handleEdit = async () => {
-    const response = await axios.get(
-      `${BASE_URL}/vender/getProfileDetails/${vendorId}`
-    );
-    console.log("====================================");
-    console.log(response.data);
-    console.log("====================================");
+    // Edit functionality
   };
+
+  const getVendorProfile = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/vender/getProfileDetails/${vendorId}`
+      );
+      console.log("====================================");
+      console.log(response.data);
+      console.log("====================================");
+      setVendorData(response.data);
+    } catch (error) {
+      console.error("Error fetching vendor profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    getVendorProfile();
+  }, []);
 
   return (
     <div className="profile-container">
@@ -42,20 +56,21 @@ const VendorProfile = () => {
         <div className="vendor-content">
           <ol>
             <li>
-              <strong>Name of the Vendor:</strong> {"name"}
+              <strong>Name of the Vendor:</strong> {vendorData.businessName}
             </li>
             <li>
-              <strong>Number of Customers:</strong> {"customers"}
+              <strong>Number of Customers:</strong> {vendorData.noOfCustomers}
             </li>
             <li>
-              <strong>Number of Plans Offered:</strong> {"plans"}
-            </li>
-
-            <li>
-              <strong>Phone Number:</strong> {"phone"}
+              <strong>Number of Plans Offered:</strong>{" "}
+              {vendorData.plansOffered}
             </li>
             <li>
-              <strong>Address of the Mess:</strong> {"address"}
+              <strong>Phone Number:</strong> {vendorData.businessPhone}
+            </li>
+            <li>
+              <strong>Address of the Mess:</strong>{" "}
+              {"vendorData.businessAddress"}
             </li>
           </ol>
         </div>
