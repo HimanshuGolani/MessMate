@@ -3,6 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { TextField, Button } from "@mui/material";
 import axios from "axios";
 import { useAppState } from "../Context/AppState";
+import { storage } from "../Firebase/Firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { toast, ToastContainer } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 import "./EditVendorProfile.css";
 
 const EditVendorProfile = () => {
@@ -21,8 +25,41 @@ const EditVendorProfile = () => {
       location: vendorData.businessAddress.location,
     },
   });
+  const [loading, setLoading] = useState(false);
 
-  const handelImageChange = () => {};
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setLoading(true);
+      const storageRef = ref(storage, `mess_images/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error(error);
+          toast.error("Failed to upload image.");
+          setLoading(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              imageOfMess: downloadURL,
+            }));
+            setLoading(false);
+            toast.success("Image uploaded successfully!");
+          });
+        }
+      );
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,18 +84,20 @@ const EditVendorProfile = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `${BASE_URL}/vender/editVendorDetails/${vendorId}`,
+        `${BASE_URL}/vender/updateVendorDetails/${vendorId}`,
         formData
       );
-      console.log(response.data.message);
-      navigate("/vendor-profile");
+      toast.success("Profile updated successfully!");
+      navigate("/vender/vendorProfile");
     } catch (error) {
       console.error("Error updating vendor profile:", error);
+      toast.error("Failed to update profile.");
     }
   };
 
   return (
     <div className="edit-profile-container">
+      <ToastContainer /> {/* ToastContainer for displaying notifications */}
       <h1>Edit Vendor Profile</h1>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -66,7 +105,6 @@ const EditVendorProfile = () => {
           name="businessName"
           value={formData.businessName}
           onChange={handleChange}
-          fullWidth
           margin="normal"
         />
         <TextField
@@ -74,7 +112,6 @@ const EditVendorProfile = () => {
           name="businessPhone"
           value={formData.businessPhone}
           onChange={handleChange}
-          fullWidth
           margin="normal"
         />
         <TextField
@@ -82,7 +119,6 @@ const EditVendorProfile = () => {
           name="Gst_No"
           value={formData.Gst_No}
           onChange={handleChange}
-          fullWidth
           margin="normal"
         />
         <TextField
@@ -90,7 +126,6 @@ const EditVendorProfile = () => {
           name="city"
           value={formData.businessAddress.city}
           onChange={handleAddressChange}
-          fullWidth
           margin="normal"
         />
         <TextField
@@ -98,19 +133,22 @@ const EditVendorProfile = () => {
           name="location"
           value={formData.businessAddress.location}
           onChange={handleAddressChange}
-          fullWidth
           margin="normal"
         />
-        <TextField
+        <input
           type="file"
           name="imageOfMess"
-          value={formData.imageOfMess}
-          onChange={handelImageChange}
-          fullWidth
+          accept="image/*"
+          onChange={handleImageChange}
           margin="normal"
         />
-        <Button variant="contained" color="primary" type="submit">
-          Save Changes
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Uploading..." : "Save Changes"}
         </Button>
       </form>
     </div>
