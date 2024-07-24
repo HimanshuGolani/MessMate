@@ -367,3 +367,16 @@ export const deletePlan = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const VendorProfile = async (req, res) => {
+  try {
+    const { vendorId } = req.params;
+    // cehck that the venodr id is recieved or not ??
+    if (!vendorId) {
+      return res.status(404).send({
+        Message: "No vendorId recieved",
+      });
+    }
+    // if recieved then retrieve the info and send it back.
+  } catch (error) {}
+};
