@@ -9,6 +9,7 @@ import {
   updatePlan,
   deletePlan,
   VendorProfile,
+  editVendorDetails,
 } from "../controllers/Vender-controller.js";
 
 const vendorRouter = express.Router();
@@ -22,5 +23,6 @@ vendorRouter.get("/getAllVendorDetails", getAllVendors);
 vendorRouter.put("/updatePlan/:planId", updatePlan);
 vendorRouter.delete("/deletePlan/:planId", deletePlan);
 vendorRouter.get("/getProfileDetails/:vendorId", VendorProfile);
+vendorRouter.put("/updateVendorDetails/:vendorId", editVendorDetails);
 
 export default vendorRouter;

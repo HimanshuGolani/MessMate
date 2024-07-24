@@ -386,10 +386,6 @@ export const VendorProfile = async (req, res) => {
       });
     }
 
-    console.log("====================================");
-    console.log(findVendor);
-    console.log("====================================");
-
     const {
       businessAddress,
       businessName,
@@ -417,5 +413,54 @@ export const VendorProfile = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const editVendorDetails = async (req, res) => {
+  try {
+    const { vendorId } = req.params;
+    if (!vendorId) {
+      return res.status(400).send({ message: "Vendor Id is required." });
+    }
+
+    const {
+      businessName,
+      businessPhone,
+      Gst_No,
+      imageOfMess,
+      businessAddress,
+    } = req.body;
+
+    // Validation: Ensure the required fields are present and valid
+    // You may use a validation library like Joi or express-validator here
+
+    const updatedVendor = await VendorModel.findByIdAndUpdate(
+      vendorId,
+      {
+        $set: {
+          businessName,
+          businessPhone,
+          Gst_No,
+          imageOfMess,
+          "businessAddress.city": businessAddress?.city,
+          "businessAddress.location": businessAddress?.location,
+        },
+      },
+      { new: true }
+    );
+
+    await updatedVendor.save();
+
+    if (!updatedVendor) {
+      return res.status(404).send({ message: "No vendor found with this id." });
+    }
+
+    return res.status(200).send({
+      message: "Update successful",
+      vendor: updatedVendor,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 };

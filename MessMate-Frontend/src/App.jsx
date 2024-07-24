@@ -14,6 +14,7 @@ import EditPlanForm from "./vendor-pages/EditPlanForm";
 import OngoingPlan from "./Pages/Plans/OngoingPlan";
 import Profile from "./Pages/Profile/Profile";
 import VendorProfile from "./vendor-pages/VendorProfile";
+import EditVendorProfile from "./vendor-pages/EditVendorProfile";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/vender/myCustomersList" element={<MyCustomersList />} />
           <Route path="/vender/editPlanForm" element={<EditPlanForm />} />
           <Route path="/vender/vendorProfile" element={<VendorProfile />} />
+          <Route path="/edit-vendor-profile" element={<EditVendorProfile />} />
         </Routes>
       </div>
     </>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import "./VendorProfile.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useAppState } from "../Context/AppState";
+import "./VendorProfile.css";
 
 const VendorProfile = () => {
   const { BASE_URL, vendorId } = useAppState();
@@ -16,9 +17,10 @@ const VendorProfile = () => {
     imageOfMess: "",
     Gst_No: "",
   });
+  const navigate = useNavigate();
 
-  const handleEdit = async () => {
-    // Edit functionality
+  const handleEdit = () => {
+    navigate("/edit-vendor-profile", { state: { vendorData } });
   };
 
   const getVendorProfile = async () => {
@@ -26,7 +28,6 @@ const VendorProfile = () => {
       const response = await axios.get(
         `${BASE_URL}/vender/getProfileDetails/${vendorId}`
       );
-
       setVendorData(response.data);
     } catch (error) {
       console.error("Error fetching vendor profile:", error);
@@ -35,9 +36,6 @@ const VendorProfile = () => {
 
   useEffect(() => {
     getVendorProfile();
-    console.log("====================================");
-    console.log(vendorData.businessAddress);
-    console.log("====================================");
   }, []);
 
   return (
