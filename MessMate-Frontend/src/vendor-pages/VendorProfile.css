@@ -42,13 +42,23 @@
 .vendor-content ol {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap; /* Ensure items wrap to next line if they overflow */
+  gap: 20px; /* Space between list items */
 }
 
 .vendor-content li {
-  margin-bottom: 15px;
+  flex: 1 1 300px; /* Allow items to grow and shrink, with a base width */
   font-size: 1.8rem;
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.mess-image {
+  width: 100px;
+  height: auto;
+  margin-top: 8px;
 }
 
 @media (max-width: 768px) {

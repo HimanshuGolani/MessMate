@@ -369,7 +369,6 @@ export const deletePlan = async (req, res) => {
 };
 
 export const VendorProfile = async (req, res) => {
-  console.log("Calling");
   try {
     const { vendorId } = req.params;
     // cehck that the venodr id is recieved or not ??
@@ -387,6 +386,10 @@ export const VendorProfile = async (req, res) => {
       });
     }
 
+    console.log("====================================");
+    console.log(findVendor);
+    console.log("====================================");
+
     const {
       businessAddress,
       businessName,
@@ -394,6 +397,7 @@ export const VendorProfile = async (req, res) => {
       ListOfPlansOffered,
       Gst_No,
       ListOfCustomers,
+      imageOfMess,
     } = findVendor;
 
     let no_of_plan_offered = ListOfPlansOffered.length;
@@ -405,6 +409,7 @@ export const VendorProfile = async (req, res) => {
       businessAddress,
       businessName,
       businessPhone,
+      imageOfMess,
       plansOffered: no_of_plan_offered,
       noOfCustomers: no_of_customers,
       Gst_No,

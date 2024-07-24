@@ -13,6 +13,7 @@ const VendorProfile = () => {
     businessPhone: "",
     plansOffered: "",
     noOfCustomers: "",
+    imageOfMess: "",
     Gst_No: "",
   });
 
@@ -25,9 +26,7 @@ const VendorProfile = () => {
       const response = await axios.get(
         `${BASE_URL}/vender/getProfileDetails/${vendorId}`
       );
-      console.log("====================================");
-      console.log(response.data);
-      console.log("====================================");
+
       setVendorData(response.data);
     } catch (error) {
       console.error("Error fetching vendor profile:", error);
@@ -36,6 +35,9 @@ const VendorProfile = () => {
 
   useEffect(() => {
     getVendorProfile();
+    console.log("====================================");
+    console.log(vendorData.businessAddress);
+    console.log("====================================");
   }, []);
 
   return (
@@ -70,7 +72,15 @@ const VendorProfile = () => {
             </li>
             <li>
               <strong>Address of the Mess:</strong>{" "}
-              {"vendorData.businessAddress"}
+              {vendorData.businessAddress.location}
+            </li>
+            <li>
+              <strong>Image of the Mess:</strong>{" "}
+              <img
+                src={vendorData.imageOfMess}
+                alt="Mess"
+                className="mess-image"
+              />
             </li>
           </ol>
         </div>
