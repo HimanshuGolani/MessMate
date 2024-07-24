@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import "./VendorProfile.css";
+import axios from "axios";
+import { useAppState } from "../Context/AppState";
 
-const VendorProfile = ({ vendorData }) => {
+const VendorProfile = () => {
+  const { BASE_URL, vendorId } = useAppState();
+  const [vendorData, setVendorData] = useState({
+    businessAddress: "",
+    businessName: "",
+    businessPhone: "",
+    plansOffered: "",
+    noOfCustomers: "",
+    Gst_No: "",
+  });
   const handleEdit = async () => {
-    // Edit functionality
+    const response = await axios.get(
+      `${BASE_URL}/vender/getProfileDetails/${vendorId}`
+    );
+    console.log("====================================");
+    console.log(response.data);
+    console.log("====================================");
   };
 
   return (

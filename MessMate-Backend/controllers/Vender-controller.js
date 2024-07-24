@@ -369,6 +369,7 @@ export const deletePlan = async (req, res) => {
 };
 
 export const VendorProfile = async (req, res) => {
+  console.log("Calling");
   try {
     const { vendorId } = req.params;
     // cehck that the venodr id is recieved or not ??
@@ -378,5 +379,38 @@ export const VendorProfile = async (req, res) => {
       });
     }
     // if recieved then retrieve the info and send it back.
-  } catch (error) {}
+    // find the vendor if exists
+    const findVendor = await VendorModel.findById(vendorId);
+    if (!findVendor) {
+      return res.status(404).send({
+        message: "Vendor not found.",
+      });
+    }
+
+    const {
+      businessAddress,
+      businessName,
+      businessPhone,
+      ListOfPlansOffered,
+      Gst_No,
+      ListOfCustomers,
+    } = findVendor;
+
+    let no_of_plan_offered = ListOfPlansOffered.length;
+    let no_of_customers = ListOfCustomers.length;
+
+    // retrieve the name , no. of customers , phone no. , adderess , no. of plans offered by him.
+    // and return it to the front end.
+    return res.status(201).send({
+      businessAddress,
+      businessName,
+      businessPhone,
+      plansOffered: no_of_plan_offered,
+      noOfCustomers: no_of_customers,
+      Gst_No,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
