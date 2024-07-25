@@ -95,7 +95,7 @@ const Profile = () => {
   const cancelMeal = async () => {
     try {
       setLoading(true);
-      await axios.post(`http://localhost:8080/api/v1/meal/cancelRequest`, {
+      await axios.post(`${BASE_URL}/meal/cancelRequest`, {
         customerId,
         planId,
         selectedDate,
