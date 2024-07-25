@@ -8,35 +8,78 @@ import {
   Paper,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
+  Button,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  CircularProgress,
 } from "@mui/material";
 import "react-calendar/dist/Calendar.css";
+import { useAppState } from "../../Context/AppState";
 
 const Profile = () => {
+  const { BASE_URL, customerId } = useAppState();
+
   const today = moment().format("YYYY-MM-DD");
   const [selectedDate, setSelectedDate] = useState(today);
-  const [todos, setTodos] = useState([]);
-  const [planStartDate, setPlanStartDate] = useState("2024-07-01");
-  const [planEndDate, setPlanEndDate] = useState("2024-07-31");
+  const [mealCancelations, setMealCancelations] = useState([]);
+  const [canceledMeals, setCanceledMeals] = useState([]);
+  const [planStartDate, setPlanStartDate] = useState(null);
+  const [planEndDate, setPlanEndDate] = useState(null);
+  const [mealType, setMealType] = useState("");
+  const [planId, setPlanId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchTodaysStatus = async (date) => {
     try {
+      setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/todos/completed/${date}`
+        `${BASE_URL}/meal/getTodaysCacnelation/${date}`
       );
-      const completedTodos = response.data.completedTodos || [];
-      setTodos(completedTodos);
+      console.log("====================================");
+      console.log(response.data);
+      console.log("====================================");
+      setMealCancelations(response.data.cancelations || []);
+      setCanceledMeals(response.data.canceledMeals || []);
+      setLoading(false);
     } catch (error) {
-      console.log("Error fetching todos:", error);
+      setError("Error fetching meal cancelations");
+      console.log("Error fetching meal cancelations:", error);
+      setLoading(false);
+    }
+  };
+
+  const getCurrentPlan = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${BASE_URL}/user/getCurrentPlanDetails/${customerId}`
+      );
+      const currentPlan = response.data.currentPlan;
+
+      setPlanId(currentPlan._id);
+      setPlanStartDate(moment(currentPlan.startingDate).format("YYYY-MM-DD"));
+      setPlanEndDate(moment(currentPlan.validTill).format("YYYY-MM-DD"));
+      setLoading(false);
+    } catch (error) {
+      setError("Error fetching plan details");
+      console.log("Error fetching plan details:", error);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (
-      moment(selectedDate).isBetween(planStartDate, planEndDate, null, "[]")
-    ) {
-      fetchTodaysStatus(selectedDate);
+    getCurrentPlan();
+  }, [customerId]);
+
+  useEffect(() => {
+    if (planStartDate && planEndDate) {
+      if (
+        moment(selectedDate).isBetween(planStartDate, planEndDate, null, "[]")
+      ) {
+        fetchTodaysStatus(selectedDate);
+      }
     }
   }, [selectedDate, planStartDate, planEndDate]);
 
@@ -46,6 +89,63 @@ const Profile = () => {
       setSelectedDate(date);
     }
   };
+
+  const handleMealTypeChange = (event) => {
+    setMealType(event.target.value);
+  };
+
+  const cancelMeal = async () => {
+    try {
+      setLoading(true);
+      await axios.post(`${BASE_URL}/meal/cancelRequest`, {
+        customerId,
+        planId,
+        mealType,
+      });
+      fetchTodaysStatus(selectedDate);
+      setLoading(false);
+    } catch (error) {
+      setError("Error canceling meal");
+      console.log("Error canceling meal:", error);
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          margin: "0 auto",
+          alignItems: "center",
+          padding: 2,
+        }}
+      >
+        {/* Display the loading spinner */}
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          margin: "0 auto",
+          alignItems: "center",
+          padding: 2,
+        }}
+      >
+        <Typography color="error">Error: {error}</Typography>{" "}
+        {/* Display error message */}
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -71,13 +171,21 @@ const Profile = () => {
         }
       />
 
-      <Typography variant="h6" sx={{ marginTop: 2 }}>
-        Meal list
+      <Typography
+        variant="h3"
+        sx={{
+          marginTop: 2,
+          textDecoration: "underline",
+          color: "rgb(207, 126, 27)",
+          fontWeight: "bold",
+        }}
+      >
+        Meal Details
       </Typography>
 
       <List>
-        {todos.length > 0 ? (
-          todos.map((item, index) => (
+        {mealCancelations.length > 0 ? (
+          mealCancelations.map((item, index) => (
             <Paper
               key={index}
               sx={{
@@ -88,7 +196,12 @@ const Profile = () => {
               }}
             >
               <ListItem>
-                <ListItemText primary={item?.title} />
+                <Typography>
+                  Meal: {item.title} - Status:{" "}
+                  {canceledMeals.some((meal) => meal._id === item._id)
+                    ? "Canceled"
+                    : "Active"}
+                </Typography>
               </ListItem>
             </Paper>
           ))
@@ -96,6 +209,30 @@ const Profile = () => {
           <Typography>No data found.</Typography>
         )}
       </List>
+
+      {moment(selectedDate).isSameOrAfter(today) &&
+      !canceledMeals.some((meal) => meal.date === selectedDate) ? (
+        <Box sx={{ marginTop: 2 }}>
+          <Typography>Select Meal Type to Cancel:</Typography>
+          <RadioGroup row value={mealType} onChange={handleMealTypeChange}>
+            <FormControlLabel value="Lunch" control={<Radio />} label="Lunch" />
+            <FormControlLabel
+              value="Dinner"
+              control={<Radio />}
+              label="Dinner"
+            />
+          </RadioGroup>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={cancelMeal}
+            disabled={!mealType}
+            sx={{ marginTop: 2 }}
+          >
+            Cancel Selected Meal
+          </Button>
+        </Box>
+      ) : null}
     </Box>
   );
 };

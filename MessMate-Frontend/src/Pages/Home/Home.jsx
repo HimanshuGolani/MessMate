@@ -55,11 +55,7 @@ const Home = () => {
       description:
         "Home-cooked meals are often healthier than restaurant food. Our cooks use fresh, high-quality ingredients to prepare nutritious dishes that support a balanced diet.",
     },
-    {
-      title: "Community Support",
-      description:
-        "By choosing our service, you are supporting local home-cooks and contributing to the local economy. Enjoy the warmth and care of homemade food while helping your community thrive.",
-    },
+
     {
       title: "Convenience",
       description:

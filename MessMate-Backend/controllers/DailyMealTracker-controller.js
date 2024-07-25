@@ -3,21 +3,24 @@ import MealTrackerModel from "../models/DailyMealTracker-model.js";
 import PlanModel from "../models/plans-model.js";
 import vendorModel from "../models/vendor-model.js";
 
+import moment from "moment";
+
 export const cancellationHandler = async (req, res) => {
   try {
-    // extracting the mealType from the req.body
+    // Extracting the mealType from the req.body
     const { customerId, planId, mealType } = req.body;
-    // checking the parameters for the controlers are non empty
+
+    // Checking that the parameters for the controllers are non-empty
     if (!customerId || !planId || !mealType) {
       return res.status(400).send({
-        message: "The data is incompletely send.",
+        message: "The data is incompletely sent.",
       });
     }
 
     const plan = await PlanModel.findById(planId);
     const customer = await CustomerModel.findById(customerId);
 
-    // checking that the requests params are valid or not
+    // Checking that the request params are valid or not
     if (!plan || !customer) {
       return res.status(404).send({
         message: "Details not found",
@@ -25,35 +28,54 @@ export const cancellationHandler = async (req, res) => {
       });
     }
 
+    // Get the current time
+    const currentTime = moment();
+
     let cancelRequest;
-    // checking the type of the meal.
+
+    // Checking the type of the meal and the cancellation time
     if (mealType === "Lunch") {
-      // logic for canceling lunch
+      // Check if the request is made before 12 PM
+      const lunchCutoffTime = moment().set({ hour: 12, minute: 0 });
+      if (currentTime.isAfter(lunchCutoffTime)) {
+        return res.status(400).send({
+          message: "Lunch cancellation must be requested before 12 PM.",
+        });
+      }
+
+      // Logic for canceling lunch
       cancelRequest = await MealTrackerModel.create({
         mealType: "Lunch",
         mealStatus: false,
         userIdOfCustomer: customerId,
-        planId: plan,
+        planId: planId,
       });
     } else if (mealType === "Dinner") {
-      // logic for canceling of dinner
+      // Check if the request is made before 6 PM
+      const dinnerCutoffTime = moment().set({ hour: 18, minute: 0 });
+      if (currentTime.isAfter(dinnerCutoffTime)) {
+        return res.status(400).send({
+          message: "Dinner cancellation must be requested before 6 PM.",
+        });
+      }
+
+      // Logic for canceling dinner
       cancelRequest = await MealTrackerModel.create({
         mealType: "Dinner",
         mealStatus: false,
         userIdOfCustomer: customerId,
-        userIdOfVendor: vendorId,
+        planId: planId,
       });
     }
 
     await cancelRequest.save();
 
     customer.Current_Plan.canceledMealsList.push(cancelRequest._id);
-
     await customer.save();
 
     return res.status(200).send({
       success: true,
-      message: "meal canceled succesfully.",
+      message: "Meal canceled successfully.",
     });
   } catch (error) {
     console.log(error);
@@ -61,6 +83,58 @@ export const cancellationHandler = async (req, res) => {
       message: "Internal server error.",
       success: false,
     });
+  }
+};
+
+export const todaysCancelation = async (req, res) => {
+  try {
+    const { date } = req.params;
+    if (!date) {
+      return res.status(400).send({ message: "Date parameter is missing." });
+    }
+
+    // Fetch meals canceled on the given date
+    const canceledMeals = await MealTrackerModel.find({ date });
+
+    // If no canceled meals are found
+    if (canceledMeals.length === 0) {
+      return res
+        .status(200)
+        .send({ message: "No canceled meals for the selected date." });
+    }
+
+    // Extract unique customer IDs from canceled meals
+    const customerIds = [
+      ...new Set(canceledMeals.map((meal) => meal.userIdOfCustomer)),
+    ];
+
+    // Fetch customer details for each customer ID
+    const customers = await CustomerModel.find({ _id: { $in: customerIds } });
+
+    // Create a mapping of customer IDs to customer details
+    const customerMap = customers.reduce((acc, customer) => {
+      acc[customer._id.toString()] = {
+        name: customer.name,
+        address: customer.address,
+      };
+      return acc;
+    }, {});
+
+    // Format the response with detailed customer information
+    const response = canceledMeals.map((meal) => ({
+      mealType: meal.mealType,
+      canceledOn: meal.createdAt,
+      customer: {
+        name: customerMap[meal.userIdOfCustomer.toString()]?.name || "Unknown",
+        address:
+          customerMap[meal.userIdOfCustomer.toString()]?.address || "Unknown",
+      },
+    }));
+
+    return res.status(200).send(response);
+  } catch (error) {
+    console.error("Error fetching today's cancellations:", error);
+    res.status(500).send({ message: "Internal server error." });
   }
 };
 

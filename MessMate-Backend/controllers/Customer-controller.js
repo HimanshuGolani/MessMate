@@ -142,7 +142,7 @@ export const purchasePlan = async (req, res) => {
   try {
     const { planId, customerId } = req.body;
 
-    console.log("The body recieved is : ", planId, customerId);
+    console.log("The body received is:", planId, customerId);
 
     if (!planId || !customerId) {
       return res.status(400).send({
@@ -151,10 +151,9 @@ export const purchasePlan = async (req, res) => {
       });
     }
 
+    // Find the user and plan
     const user = await CustomerModel.findById(customerId);
     const chosenPlan = await plansModel.findById(planId);
-
-    console.log("The customer found is : ", user);
 
     if (!user || !chosenPlan) {
       return res.status(404).send({
@@ -163,13 +162,14 @@ export const purchasePlan = async (req, res) => {
       });
     }
 
-    // incrementing the plans no. of customers have taken.
-    chosenPlan.numberOfCustomers = chosenPlan.numberOfCustomers + 1;
+    // Incrementing the plan's number of customers
+    chosenPlan.numberOfCustomers += 1;
 
+    // Setting current plan details for the user
     user.Current_Plan = {
       plan: planId,
-      startingDate: new Date(),
-      validTill: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      startingDate: chosenPlan.startingDateOfPlan, // Use the plan's starting date
+      validTill: chosenPlan.endingDate, // Use the plan's ending date
       vendorId: chosenPlan.offeredBy,
     };
 
@@ -185,6 +185,7 @@ export const purchasePlan = async (req, res) => {
     vendor.ListOfCustomers.push(customerId);
     await user.save();
     await vendor.save();
+    await chosenPlan.save(); // Save the updated plan
 
     console.log(user, vendor);
 
@@ -200,13 +201,13 @@ export const purchasePlan = async (req, res) => {
     });
   }
 };
-
 // Getting the current plan details customer has
 // error exists in this fix it.
 export const getCurrentPlan = async (req, res) => {
   try {
     const { userId } = req.params;
-    console.profileEnd(userId);
+
+    console.log("User ID received:", userId);
 
     if (!userId) {
       return res.status(400).send({
@@ -219,24 +220,36 @@ export const getCurrentPlan = async (req, res) => {
       "Current_Plan.plan"
     );
 
-    console.log(currentUser);
-
-    const { offeredBy } = currentUser.Current_Plan.plan;
-
-    const vendorDetails = await VendorModel.findById(offeredBy);
-
-    if (!currentUser) {
+    if (
+      !currentUser ||
+      !currentUser.Current_Plan ||
+      !currentUser.Current_Plan.plan
+    ) {
       return res.status(404).send({
-        message: "User not found.",
+        message: "User or Current Plan not found.",
         success: false,
       });
     }
 
     const currentPlan = currentUser.Current_Plan.plan;
+    const offeredBy = currentUser.Current_Plan.plan.offeredBy;
+
+    const vendorDetails = await VendorModel.findById(offeredBy);
+
+    if (!vendorDetails) {
+      return res.status(404).send({
+        message: "Vendor not found.",
+        success: false,
+      });
+    }
 
     return res.status(200).send({
       success: true,
-      currentPlan: currentPlan,
+      currentPlan: {
+        ...currentPlan.toObject(),
+        startingDate: currentUser.Current_Plan.startingDate,
+        validTill: currentUser.Current_Plan.validTill,
+      },
       vendorName: vendorDetails.businessName,
     });
   } catch (error) {
@@ -247,7 +260,6 @@ export const getCurrentPlan = async (req, res) => {
     });
   }
 };
-
 // Previous plans list
 export const getPreviousPlans = async (req, res) => {
   try {
