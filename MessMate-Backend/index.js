@@ -29,6 +29,4 @@ app.use("/api/v1/meal", mealCancelationRouter);
 connectionWithDb();
 
 // starting the app
-app.listen(PORT, () => {
-  console.log(`Server is started at port ${PORT}`);
-});
+app.listen(PORT);

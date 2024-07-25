@@ -3,7 +3,6 @@ import CustomerModel from "../models/Customer-model.js";
 import plansModel from "../models/plans-model.js";
 import VendorModel from "../models/vendor-model.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 // to display hapy custoemrs name and their count...

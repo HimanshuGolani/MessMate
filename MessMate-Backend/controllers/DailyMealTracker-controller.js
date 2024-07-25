@@ -8,10 +8,10 @@ import moment from "moment";
 export const cancellationHandler = async (req, res) => {
   try {
     // Extracting the mealType from the req.body
-    const { customerId, planId, mealType } = req.body;
+    const { customerId, selectedDate, planId, mealType } = req.body;
 
     // Checking that the parameters for the controllers are non-empty
-    if (!customerId || !planId || !mealType) {
+    if (!customerId || !planId || !mealType || !selectedDate) {
       return res.status(400).send({
         message: "The data is incompletely sent.",
       });
@@ -47,6 +47,7 @@ export const cancellationHandler = async (req, res) => {
       cancelRequest = await MealTrackerModel.create({
         mealType: "Lunch",
         mealStatus: false,
+        todaysDate: selectedDate,
         userIdOfCustomer: customerId,
         planId: planId,
       });
@@ -63,6 +64,7 @@ export const cancellationHandler = async (req, res) => {
       cancelRequest = await MealTrackerModel.create({
         mealType: "Dinner",
         mealStatus: false,
+        todaysDate: selectedDate,
         userIdOfCustomer: customerId,
         planId: planId,
       });
@@ -88,13 +90,16 @@ export const cancellationHandler = async (req, res) => {
 
 export const todaysCancelation = async (req, res) => {
   try {
-    const { date } = req.params;
-    if (!date) {
+    const { selectedDate, customerId } = req.params;
+
+    if (!selectedDate) {
       return res.status(400).send({ message: "Date parameter is missing." });
     }
 
-    // Fetch meals canceled on the given date
-    const canceledMeals = await MealTrackerModel.find({ date });
+    const canceledMeals = await MealTrackerModel.find({
+      userIdOfCustomer: customerId,
+      todaysDate: selectedDate,
+    }).populate("userIdOfCustomer");
 
     // If no canceled meals are found
     if (canceledMeals.length === 0) {
@@ -103,35 +108,21 @@ export const todaysCancelation = async (req, res) => {
         .send({ message: "No canceled meals for the selected date." });
     }
 
-    // Extract unique customer IDs from canceled meals
-    const customerIds = [
-      ...new Set(canceledMeals.map((meal) => meal.userIdOfCustomer)),
-    ];
-
-    // Fetch customer details for each customer ID
-    const customers = await CustomerModel.find({ _id: { $in: customerIds } });
-
-    // Create a mapping of customer IDs to customer details
-    const customerMap = customers.reduce((acc, customer) => {
-      acc[customer._id.toString()] = {
-        name: customer.name,
-        address: customer.address,
-      };
-      return acc;
-    }, {});
-
     // Format the response with detailed customer information
     const response = canceledMeals.map((meal) => ({
       mealType: meal.mealType,
-      canceledOn: meal.createdAt,
+      canceledOn: meal.todaysDate,
       customer: {
-        name: customerMap[meal.userIdOfCustomer.toString()]?.name || "Unknown",
-        address:
-          customerMap[meal.userIdOfCustomer.toString()]?.address || "Unknown",
+        name: meal.userIdOfCustomer.fullName || "Unknown",
+        address: meal.userIdOfCustomer.address || "Unknown",
       },
     }));
 
-    return res.status(200).send(response);
+    console.log("====================================");
+    console.log(response);
+    console.log("====================================");
+
+    return res.status(200).send({ response });
   } catch (error) {
     console.error("Error fetching today's cancellations:", error);
     res.status(500).send({ message: "Internal server error." });
@@ -139,7 +130,7 @@ export const todaysCancelation = async (req, res) => {
 };
 
 export const canceledMealsList = async (req, res) => {
-  const { vendorId } = req.body;
+  const { vendorId } = req.params;
 
   try {
     // Find the vendor by ID and populate the ListOfCustomers field

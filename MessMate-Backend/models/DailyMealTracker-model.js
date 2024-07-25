@@ -8,7 +8,7 @@ const MealTrackSchema = new mongoose.Schema({
   },
   todaysDate: {
     type: Date,
-    default: () => new Date(),
+    default: Date,
   },
   mealStatus: {
     type: Boolean,

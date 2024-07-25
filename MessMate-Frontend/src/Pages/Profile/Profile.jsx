@@ -23,7 +23,6 @@ const Profile = () => {
   const today = moment().format("YYYY-MM-DD");
   const [selectedDate, setSelectedDate] = useState(today);
   const [mealCancelations, setMealCancelations] = useState([]);
-  const [canceledMeals, setCanceledMeals] = useState([]);
   const [planStartDate, setPlanStartDate] = useState(null);
   const [planEndDate, setPlanEndDate] = useState(null);
   const [mealType, setMealType] = useState("");
@@ -35,13 +34,12 @@ const Profile = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${BASE_URL}/meal/getTodaysCacnelation/${date}`
+        `${BASE_URL}/meal/getTodaysCacnelation/${selectedDate}/${customerId}`
       );
       console.log("====================================");
       console.log(response.data);
       console.log("====================================");
-      setMealCancelations(response.data.cancelations || []);
-      setCanceledMeals(response.data.canceledMeals || []);
+      setMealCancelations(response.data.response || []);
       setLoading(false);
     } catch (error) {
       setError("Error fetching meal cancelations");
@@ -97,9 +95,10 @@ const Profile = () => {
   const cancelMeal = async () => {
     try {
       setLoading(true);
-      await axios.post(`${BASE_URL}/meal/cancelRequest`, {
+      await axios.post(`http://localhost:8080/api/v1/meal/cancelRequest`, {
         customerId,
         planId,
+        selectedDate,
         mealType,
       });
       fetchTodaysStatus(selectedDate);
@@ -197,21 +196,18 @@ const Profile = () => {
             >
               <ListItem>
                 <Typography>
-                  Meal: {item.title} - Status:{" "}
-                  {canceledMeals.some((meal) => meal._id === item._id)
-                    ? "Canceled"
-                    : "Active"}
+                  Meal: {item.mealType} - Status: Canceled
                 </Typography>
               </ListItem>
             </Paper>
           ))
         ) : (
-          <Typography>No data found.</Typography>
+          <Typography variant="h5">No meals canceled on this date.</Typography>
         )}
       </List>
 
       {moment(selectedDate).isSameOrAfter(today) &&
-      !canceledMeals.some((meal) => meal.date === selectedDate) ? (
+      !mealCancelations.some((meal) => meal.date === selectedDate) ? (
         <Box sx={{ marginTop: 2 }}>
           <Typography>Select Meal Type to Cancel:</Typography>
           <RadioGroup row value={mealType} onChange={handleMealTypeChange}>
